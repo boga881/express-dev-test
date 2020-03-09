@@ -17,31 +17,42 @@ module.exports = {
         publicPath: '/js/',
         filename: `[name].js`,
     },
+    resolve: {
+     alias: {
+       Components: path.resolve(__dirname, 'src/js/Components/')
+     }
+   },
     module: {
-        rules: [
+      rules: [
+        {
+          test: /\.m?js$/,
+          exclude: /(node_modules|bower_components)/,
+          use: [
             {
-                test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: [
-                                [
-                                    '@babel/preset-env',
-                                    {
-                                        'modules': 'false',//commonjs,amd,umd,systemjs,auto
-                                        'useBuiltIns': 'usage',
-                                        'targets': '> 0.25%, not dead',
-                                        'corejs': 3
-                                    }
-                                ]
-                            ]
-                        }
-                    }
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  [
+                    '@babel/preset-env',
+                      {
+                        'modules': 'false',//commonjs,amd,umd,systemjs,auto
+                        'useBuiltIns': 'usage',
+                        'targets': '> 0.25%, not dead',
+                        'corejs': 3
+                      }
+                  ],
+                  [
+                    '@babel/react',
+                      {
+                        'plugins': ['@babel/plugin-proposal-class-properties']
+                      }
+                  ]
                 ]
+              }
             }
-        ]
+          ]
+        }
+      ]
     },
     resolve: {
         alias: {}
