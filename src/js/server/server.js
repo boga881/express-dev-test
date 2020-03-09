@@ -8,18 +8,14 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('../../../webpack.config.js');
 
 const app = express();
-const port = 8081;
+const port = 8080;
 
 const devServerEnabled = true;
 
-
-
-//IMPORTS
-import _ from 'lodash';
-import hap from 'hap-nodejs';
-import pwauth from 'utilz';
-
 if (devServerEnabled) {
+    //reload=true:Enable auto reloading when changing JS files or content
+    //timeout=1000:Time from disconnecting from server to reconnecting
+    config.entry.app.unshift('webpack-hot-middleware/client?reload=true&timeout=1000');
 
     //Add HMR plugin
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
