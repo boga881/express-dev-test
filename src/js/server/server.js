@@ -33,6 +33,10 @@ if (devServerEnabled) {
 
 app.use(express.static('./dist'));
 
+app.post('/api/pew', multipart.any(), function (req, res) {
+ res.json('pew pew');
+});
+
 //API
 app.post('/api/add', multipart.any(), function (req, res) {
 
