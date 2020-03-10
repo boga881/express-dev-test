@@ -5,7 +5,8 @@ export default class Button extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
-        logging: 'No Logging'
+        logging: 'No Logging',
+        solenoid: 'false'
       };
 
       this.handleClick = this.handleClick.bind(this);
@@ -13,22 +14,38 @@ export default class Button extends React.Component {
   }
 
   handleChange(event) {
-    this.setState({value: event.target.value});
+    this.setState({
+	value: event.target.value,
+	//solenoid: !this.state.solenoid
+    });
   }
 
   handleClick(e) {
     e.preventDefault;
-    console.log('The button was clicked.');
+    console.log('The button was clicked: ' + this.state.solenoid);
+    let endpoint = '';
+
+    if (this.state.solenoid) {
+	     endpoint = 'relayoff';
+    } else {
+	     endpoint = 'relayon';
+    }
+
+    this.setState({
+      solenoid: !this.state.solenoid
+    });
 
     (async () => {
       try {
-        const res = await superagent.post('/api/pew');
+        const res = await superagent.post('/api/'+ endpoint);
+        console.log('ENDPOINT: ' + endpoint);
         console.log(res);
         this.setState({logging: JSON.stringify(res.body)});
       } catch (err) {
         console.error(err);
       }
     })();
+
 
     /*    return dispatch => {
             dispatch({

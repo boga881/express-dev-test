@@ -33,15 +33,28 @@ if (devServerEnabled) {
 
 app.use(express.static('./dist'));
 
-app.post('/api/pew', multipart.any(), function (req, res) {
+app.post('/api/relayon', multipart.any(), function (req, res) {
   const Gpio = require('onoff').Gpio;
-  const led = new Gpio(17, 'out');
-  const button = new Gpio(4, 'in', 'both');
+  const led = new Gpio(26, 'out');
 
-  button.watch((err, value) => led.writeSync(value));
+	process.on('SIGINT', _ => {
+  		led.unexport();
+	});
 
- res.json('pew pew');
+ res.json('solenoid on');
 });
+
+app.post('/api/relayoff', multipart.any(), function (req, res) {
+  const Gpio = require('onoff').Gpio;
+  const led = new Gpio(26, 'in');
+
+	process.on('SIGINT', _ => {
+  		led.unexport();
+	});
+
+ res.json('solenoid off');
+});
+
 
 //API
 app.post('/api/add', multipart.any(), function (req, res) {
