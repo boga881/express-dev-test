@@ -1,6 +1,15 @@
-import React from 'react';
+import React, { Component } from "react";
 import ReactDOM from 'react-dom';
-import Button from './Components/Button';
+//import Button from './Components/Button';
+//import { createStore, applyMiddleware } from 'redux'
+//import * as createHistory  from 'history'
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import Routes from 'components/Routes';
+//import reducer from './reducers'
+//import thunk from 'redux-thunk';
+import M from "materialize-css";
+import "materialize-css/dist/css/materialize.min.css";
 
 function App() {
 
@@ -12,7 +21,12 @@ function App() {
 
   return (
     <div className="container">
-      <Button/>
+    //  <Provider store={store}>
+    //    <Router history={history}>
+    //      <Routes />
+          <Button/>
+    //    </Router>
+    //  </Provider>
       {/*<Provider store={store}>
         <Router history={history}>
           <Routes />
