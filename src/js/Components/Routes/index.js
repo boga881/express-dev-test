@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
-import Main from 'Components/Routes/Main';
-import Schedule from 'Components/Routes/Schedule';
-import Settings from 'Components/Routes/Settings';
-import History from 'Components/Routes/History';
-import Login from 'Components/Routes/Login';
-import NotFound from 'Components/Routes/NotFound';
-import logo from "../../../img/icon.png";
-import sidebar from "../../../img/sidebar.jpg";
+import Main from 'components/Routes/Main';
+//import Schedule from 'components/Routes/Schedule';
+//import Settings from 'components/Routes/Settings';
+//import History from 'Components/Routes/History';
+//import Login from 'components/Routes/Login';
+import NotFound from 'components/Routes/NotFound';
+import logo from 'images/icon.png';
+import sidebar from 'images/sidebar.jpg';
 
 class Routes extends Component {
 

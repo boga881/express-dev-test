@@ -10,7 +10,9 @@ const config = require('../../../webpack.config.js');
 const app = express();
 const port = 8080;
 
-const devServerEnabled = true;
+//const devServerEnabled = true;
+
+const devServerEnabled = process.env.NODE_ENV !== 'production';
 
 if (devServerEnabled) {
     //reload=true:Enable auto reloading when changing JS files or content
@@ -34,23 +36,29 @@ if (devServerEnabled) {
 app.use(express.static('./dist'));
 
 app.post('/api/relayon', multipart.any(), function (req, res) {
-  const Gpio = require('onoff').Gpio;
-  const led = new Gpio(26, 'out');
 
-	process.on('SIGINT', _ => {
-  		led.unexport();
-	});
+  // No switch on dev environment
+  if (!devServerEnabled) {
+    const Gpio = require('onoff').Gpio;
+    const led = new Gpio(26, 'out');
+  	process.on('SIGINT', _ => {
+    		led.unexport();
+  	});
+  }
 
  res.json('solenoid on');
 });
 
 app.post('/api/relayoff', multipart.any(), function (req, res) {
-  const Gpio = require('onoff').Gpio;
-  const led = new Gpio(26, 'in');
 
-	process.on('SIGINT', _ => {
-  		led.unexport();
-	});
+  // No switch on dev environment
+  if (!devServerEnabled) {
+    const Gpio = require('onoff').Gpio;
+    const led = new Gpio(26, 'in');
+    process.on('SIGINT', _ => {
+        led.unexport();
+    });
+  }
 
  res.json('solenoid off');
 });

@@ -1,15 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
-import ValveSwitch from 'Components/ValveSwitch';
-import Logo from 'Components/Logo';
+//import ValveSwitch from 'components/ValveSwitch';
+import Logo from 'components/Logo';
 import { createBrowserHistory } from 'history'
 
 function Main(props) {
 
-  let DevTools = process.env.NODE_ENV !== 'production'
+  /*let DevTools = process.env.NODE_ENV !== 'production'
     ? DevTools = require('Utils/devtools')
-    : null;
+    : null;*/
 
   const history = createBrowserHistory();
 
@@ -20,7 +20,7 @@ function Main(props) {
 
   return (
     <div>
-      <DevTools />
+    {/*<DevTools />*/}
       <header>
         <nav className='top-nav'>
           <div className='nav-wrapper'>
@@ -31,7 +31,7 @@ function Main(props) {
               <i style={{marginLeft:'52px'}} className='material-icons'>menu</i>
             </a>
 
-            <ValveSwitch />
+          {/*<ValveSwitch />*/}
           </div>
         </nav>
       </header>

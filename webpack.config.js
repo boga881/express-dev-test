@@ -33,7 +33,8 @@ module.exports = {
   resolve: {
     alias: {
       Utilities: path.resolve(__dirname, 'src/utilities/'),
-      components: path.resolve(__dirname, './src/js/Components')
+      components: path.resolve(__dirname, './src/js/Components'),
+      images: path.resolve(__dirname, './src/img'),
     }
   },
   module: {
@@ -69,6 +70,12 @@ module.exports = {
           'style-loader',
           'css-loader',
           'sass-loader'
+        ],
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          'file-loader',
         ],
       }
     ]

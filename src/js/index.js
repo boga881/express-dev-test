@@ -5,9 +5,11 @@ import ReactDOM from 'react-dom';
 //import * as createHistory  from 'history'
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import Routes from 'components/Routes';
+//import Routes from 'components/Routes';
 //import reducer from './reducers'
 //import thunk from 'redux-thunk';
+import Button from 'components/Button';
+import SideNav from 'components/SideNav';
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 
@@ -21,17 +23,8 @@ function App() {
 
   return (
     <div className="container">
-    //  <Provider store={store}>
-    //    <Router history={history}>
-    //      <Routes />
-          <Button/>
-    //    </Router>
-    //  </Provider>
-      {/*<Provider store={store}>
-        <Router history={history}>
-          <Routes />
-        </Router>
-      </Provider>*/}
+      <Button />
+      <SideNav />
     </div>
   );
 }
@@ -39,6 +32,18 @@ function App() {
 const rootElement = document.getElementById("app-container");
 ReactDOM.render(<App />, rootElement);
 
+
+/*  <Provider store={store}>
+    <Router history={history}>
+      <Routes />*/
+
+/*    </Router>
+  </Provider>
+  <Provider store={store}>
+    <Router history={history}>
+      <Routes />
+    </Router>
+  </Provider>*/
 
 // const btnSend = document.querySelector('#app-container');
 //
