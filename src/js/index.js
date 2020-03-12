@@ -6,14 +6,26 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 //import Routes from 'components/Routes';
-//import reducer from './reducers'
+//import reducer from 'reducers';
 //import thunk from 'redux-thunk';
 import Button from 'components/Button';
 import SideNav from 'components/SideNav';
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from 'reducers';
+
+
+
 function App() {
+
+  const store = configureStore({
+    reducer: rootReducer
+  });
+
+  //const store = configureStore()
+
 
   {/*const history = createHistory.createBrowserHistory();*/}
   //const store = createStoreWithMiddleware();
@@ -24,7 +36,9 @@ function App() {
   return (
     <div className="container">
   {/*<Button />*/}
-      <SideNav />
+      <Provider store={store}>
+        <SideNav />
+      </Provider>
     </div>
   );
 }

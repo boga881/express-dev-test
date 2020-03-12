@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 //import tapOrClick from 'react-tap-or-click';
 import { connect } from 'react-redux';
-//import { getSettings, updateSettings } from 'Actions/settings';
+import { getSettings, updateSettings } from 'Actions/settings';
 import Loading from 'components/Loading';
 //import UserLocation from 'Components/UserLocation';
 //import * as clientConfig from 'Utils/client-config';
@@ -100,12 +100,12 @@ class SettingsComponent extends Component {
                   <p>The 8 digit Pin code required to register this device with Apple HomeKit.</p>
                 </div>
               </div>
-              <div className='row'>
+              {/*<div className='row'>
                 <div className='input-field col s12'>
                   <label htmlFor="homekit-pin">HomeKit Pin</label>
                   <input value={clientConfig.HOMEKIT_PINCODE} readOnly={true} id="homekit-pin" type="text" />
                 </div>
-              </div>
+              </div>*/}
               <div className='row'>
                 <div className='col s12'>
                   <p>Automatically switch off the valve after a set duration of time. This setting does not affect scheduled waterings.</p>

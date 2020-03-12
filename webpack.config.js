@@ -32,9 +32,10 @@ module.exports = {
   },
   resolve: {
     alias: {
-      Utilities: path.resolve(__dirname, 'src/utilities/'),
+      actions: path.resolve(__dirname, './src/js/actions/'),
       components: path.resolve(__dirname, './src/js/Components'),
       images: path.resolve(__dirname, './src/img'),
+      reducers: path.resolve(__dirname, './src/js/reducers')
     }
   },
   module: {
