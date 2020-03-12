@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
-import Main from 'components/Routes/Main';
+import Button from 'components/Button';
 //import Schedule from 'components/Routes/Schedule';
-//import Settings from 'components/Routes/Settings';
+import Settings from 'components/Routes/Settings';
 //import History from 'Components/Routes/History';
 //import Login from 'components/Routes/Login';
 import NotFound from 'components/Routes/NotFound';
@@ -37,77 +37,19 @@ class Routes extends Component {
   render() {
 
     return (
-      <Router>
-        <div>
-          <ul ref={Sidenav => {this.Sidenav = Sidenav;}} id='slide-out' className='sidenav'>
-            <li>
-              <div className="user-view">
-                <div className="background">
-                  <img src={sidebar} />
-                </div>
-                <a href="#user">
-                  <img className="circle" src={logo} />
-                </a>
-                <a href="#name">
-                  <span className="white-text name">John Doe</span>
-                </a>
-                <a href="#email">
-                  <span className="white-text email">jdandturk@gmail.com</span>
-                </a>
-              </div>
-            </li>
-            <li>
-              <a href="#!">
-                <i className="material-icons">cloud</i>First Link With Icon
-              </a>
-            </li>
-            <li className='sidenav-close'>
-              {/*<i className='material-icons left'>*/}
-              <Link to="/schedule">Schedule</Link>
-              {/*</i>*/}
-            </li>
-            <li className='sidenav-close'>
-              {/*<i className='material-icons left'>*/}
-                <Link to="/history">History</Link>
-              {/*</i>*/}
-            </li>
-            <li className='sidenav-close'>
-              {/*<i className='material-icons left'>*/}
-                <Link to="/settings">Settings</Link>
-              {/*</i>*/}
-            </li>
-            <li className='sidenav-close'>
-              {/*<i className='material-icons left'>*/}
-                <Link to="/logout">Logout</Link>
-              {/*</i>*/}
-            </li>
-            <li>
-              <div className="divider" />
-            </li>
-            <li>
-              <a className="subheader">Subheader</a>
-            </li>
-            <li>
-              <a className="waves-effect" href="#!">
-                Third Link With Waves
-              </a>
-            </li>
-          </ul>
-          <a href="#" data-target="slide-out" className="sidenav-trigger">
-            <i className="material-icons">menu</i>
-          </a>
-        </div>
+
+    {/*  <Router>
 
         <Switch>
-          <Route exact path='/' component={Main} />
+          <Route exact path='/' component={Button} />
+          <Route path='/settings' component={Settings} />
           <Route path='/login' component={Login} />
           <Route path='/schedule' component={Schedule} />
-          <Route path='/settings' component={Settings} />
           <Route path='/history' component={History} />
           <Route component={NotFound} />
         </Switch>
 
-      </Router>
+      </Router>*/}
     );
   }
 }

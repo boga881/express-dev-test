@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
 //import Main from 'components/Routes/Main';
 //import Schedule from 'components/Routes/Schedule';
-//import Settings from 'components/Routes/Settings';
+import Settings from 'components/Routes/Settings';
 //import History from 'Components/Routes/History';
 //import Login from 'components/Routes/Login';
+import Button from 'components/Button';
 import NotFound from 'components/Routes/NotFound';
 import logo from 'images/icon.png';
 import sidebar from 'images/sidebar.jpg';
@@ -89,14 +90,14 @@ class SideNav extends Component {
           </a>
         </div>
 
-      {/*  <Switch>
-          <Route exact path='/' component={Main} />
-          // <Route path='/login' component={Login} />
-          // <Route path='/schedule' component={Schedule} />
-          // <Route path='/settings' component={Settings} />
-          // <Route path='/history' component={History} />
-          <Route component={NotFound} />
-        </Switch> */}
+        <Switch>
+          <Route exact path='/' component={Button} />
+          <Route path='/settings' component={Settings} />
+          {/*<Route path='/login' component={Login} />
+          <Route path='/schedule' component={Schedule} />
+          <Route path='/history' component={History} />
+          <Route component={NotFound} />*/}
+        </Switch>
 
       </Router>
     );

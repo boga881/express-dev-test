@@ -15,15 +15,15 @@ import "materialize-css/dist/css/materialize.min.css";
 
 function App() {
 
-  {/*const history = createHistory.createBrowserHistory();
-  const store = createStoreWithMiddleware(
-    reducer,
+  {/*const history = createHistory.createBrowserHistory();*/}
+  //const store = createStoreWithMiddleware();
+    /*reducer,
     applyMiddleware(thunk)
-  );*/}
+  );*/
 
   return (
     <div className="container">
-      <Button />
+  {/*<Button />*/}
       <SideNav />
     </div>
   );

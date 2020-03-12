@@ -34,13 +34,30 @@ export default class Button extends React.Component {
     this.setState({
       solenoid: !this.state.solenoid
     });
-
+    //aydm8izeric3yof2bqhut994zpfevu
     (async () => {
       try {
         const res = await superagent.post('/api/'+ endpoint);
         console.log('ENDPOINT: ' + endpoint);
         console.log(res);
         this.setState({logging: JSON.stringify(res.body)});
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+
+    // Pushover notification
+    (async () => {
+      try {
+        const res = await superagent
+        .post('https://api.pushover.net/1/messages.json')
+        .send({
+        	"token": "aydm8izeric3yof2bqhut994zpfevu",
+        	"user": "up5PLmNmgVho9gogJpqHXnd4RUNi9v",
+        	"title": "ICUP",
+        	"message": "Testing"
+        })
+        .set('Content-Type', 'application/json')
       } catch (err) {
         console.error(err);
       }
