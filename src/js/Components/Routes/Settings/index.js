@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 //import tapOrClick from 'react-tap-or-click';
 import { connect } from 'react-redux';
-import { getSettings, updateSettings } from 'Actions/settings';
+import { getSettings, updateSettings } from 'actions/settings';
 import Loading from 'components/Loading';
+import Valves from 'components/Routes/Settings/Valves';
 //import UserLocation from 'Components/UserLocation';
 //import * as clientConfig from 'Utils/client-config';
+import config from 'root/icup.config.json';
 
 class SettingsComponent extends Component {
 
@@ -20,9 +22,13 @@ class SettingsComponent extends Component {
   }
 
   componentDidMount() {
+   //console.log('THE CONFIG: ');
+   //console.log(JSON.stringify(config));
+
     this.setState({
       isLoading: false
     });
+
     // if (!this.state.initialized) {
     //   this.props.dispatch(getSettings());
     // } else {
@@ -100,6 +106,10 @@ class SettingsComponent extends Component {
                   <p>The 8 digit Pin code required to register this device with Apple HomeKit.</p>
                 </div>
               </div>
+              <div className='row'>
+                <Valves />
+              </div>
+
               {/*<div className='row'>
                 <div className='input-field col s12'>
                   <label htmlFor="homekit-pin">HomeKit Pin</label>

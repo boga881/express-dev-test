@@ -47,7 +47,7 @@ export default class Button extends React.Component {
     })();
 
     // Pushover notification
-    (async () => {
+  /*  (async () => {
       try {
         const res = await superagent
         .post('https://api.pushover.net/1/messages.json')
@@ -62,7 +62,7 @@ export default class Button extends React.Component {
         console.error(err);
       }
     })();
-
+*/
 
     /*    return dispatch => {
             dispatch({

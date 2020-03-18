@@ -35,7 +35,9 @@ module.exports = {
       actions: path.resolve(__dirname, './src/js/actions/'),
       components: path.resolve(__dirname, './src/js/Components'),
       images: path.resolve(__dirname, './src/img'),
-      reducers: path.resolve(__dirname, './src/js/reducers')
+      reducers: path.resolve(__dirname, './src/js/reducers'),
+      root:  path.resolve(__dirname, './'),
+      utils: path.resolve(__dirname, './src/js/utils')
     }
   },
   module: {
