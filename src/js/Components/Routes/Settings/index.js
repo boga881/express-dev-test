@@ -101,13 +101,16 @@ class SettingsComponent extends Component {
           <div className='row'>
             <h3>Settings</h3>
             <form className='col s12'>
-              <div className='row'>
+              {/*<div className='row'>
                 <div className='col s12'>
                   <p>The 8 digit Pin code required to register this device with Apple HomeKit.</p>
                 </div>
-              </div>
+              </div>*/}
               <div className='row'>
-                <Valves />
+                <div className='col s12'>
+                  <p>Enable multiple valves and their corrisponding GPIO pin using the configuration.</p>
+                  <Valves />
+                </div>
               </div>
 
               {/*<div className='row'>

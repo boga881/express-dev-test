@@ -5,7 +5,7 @@ const multipart = multer();
 
 import fs from 'fs';
 //const settingsFile = 'config';
-const settingsFile = './icup.config.json';
+const settingsFile = '../../../icup.config.json';
 console.log('settings file:');
 console.log(JSON.stringify(settingsFile));
 const settings = require(settingsFile);

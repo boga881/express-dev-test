@@ -5,7 +5,8 @@ import { getSettings, updateSettings } from 'actions/settings';
 //import UserLocation from 'Components/UserLocation';
 //import * as clientConfig from 'Utils/client-config';
 import config from 'root/icup.config.json';
-import { Switch, Row, Col } from 'react-materialize';
+import { Switch, TextInput, Row, Col } from 'react-materialize';
+import { forEach } from 'lodash'
 
 class Valves extends Component {
 
@@ -23,7 +24,10 @@ class Valves extends Component {
   componentDidMount() {
    console.log('THE CONFIG: ');
    console.log(JSON.stringify(config));
-   console.log(config.VALVE_ONE);
+
+   _.forEach(config.VALVES, function(value) {
+     console.log(value);
+   });
 
     this.setState({
       isLoading: false
@@ -41,11 +45,11 @@ class Valves extends Component {
     M.updateTextFields(); */}
   }
 
-  componentWillReceiveProps(nextProps) {
+  /*componentWillReceiveProps(nextProps) {
     if (nextProps.initialized && !nextProps.updating) {
       this.setStateFromProps(nextProps);
     }
-  }
+  }*/
 
   setStateFromProps(props) {
     this.setState({
@@ -84,9 +88,8 @@ class Valves extends Component {
 
   switchChange = (id) => {
     //TODO:  Update config.
-    const valve = `valve_${id}`
     const status = !this.state.valve
-    console.log(valve + ':' + status);
+    console.log(id + ':' + status);
     /*
     this.setState({
       [valve]: [status]
@@ -94,35 +97,51 @@ class Valves extends Component {
     */
   }
 
+  inputChange = (id) => {
+    //TODO:  Update config.
+    const status = !this.state.valve
+    console.log(`input change: ${id}`);
+  }
+
   render() {
     //const { isLoading, checkWeather } = this.state;
     const valve_id = 'VALVE_ONE';
     const checked = true;
+    const valves = config.VALVES;
+    /*console.log(`VALVES:`);
+    console.log(JSON.stringify(valves));
     console.log('Checked: '  + checked);
     console.log('valve render');
     console.log('valve status:');
     console.log(config[valve_id]);
-
-    return(
-      <React.Fragment>
-        <div className='row'>
-          <div>{`Valve ${valve_id}`}</div>
-          <div className='input-field col s6'>
-            <Switch
-              id={valve_id}
-              offLabel="Disabled"
-              onChange={function switchChange(valve_id){}}
-              onLabel="Enabled"
-              checked={config[valve_id]}
-            />
-          </div>
-
-          <div className='input-field col s6'>
-            <input placeholder="GPIO Pin#" id={`valve_${valve_id}`} type="text" class="validate" value={config.VALVE_ONE} disabled={[this.state.valve_id] ? '' : 'disabled'} />
-            <label for={`valve_${valve_id}`}>{`Valve ${valve_id}`}</label>
-          </div>
-
+*/
+    const opt = Object.keys(valves).map(key =>
+      <div className={`CONTAINER_${key}`}>
+        <div className={`TITLE_${key}`}>{`Valve ${valves[key].POSITION}`}</div>
+        <div className={`input-field col s6 SWITCH_${key}`}>
+          <Switch
+            offLabel="Disabled"
+            onChange={function switchChange(key){}}
+            onLabel="Enabled"
+            checked={valves[key].ENABLED}
+          />
         </div>
+        <div className={`input-field col s6 INPUT_${key}`}>
+          <TextInput
+            label={`Valve ${valves[key].POSITION} GPIO pin`}
+            onChange={function inputChange(key){}}
+            placeholder="GPIO Pin#"
+            className="validate"
+            value={valves[key].GPIO}
+            disabled={valves[key].ENABLED ? false : true}
+          />
+        </div>
+      </div>
+    );
+
+    return (
+      <React.Fragment>
+        {opt}
       </React.Fragment>
     );
   }

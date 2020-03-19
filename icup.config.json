@@ -1,8 +1,28 @@
 {
-  "VALVE_ONE": 21,
-  "VALVE_TWO": 21,
-  "VALVE_THREE": 21,
-  "VALVE_FOUR": 21,
-  "dan": "ABC",
-  "pew": "zap"
+  "VALVES": {
+    "VALVE_ONE": {
+      "POSITION": 1,
+      "ENABLED": true,
+      "DESCRIPTION": "",
+      "GPIO": "21"
+    },
+    "VALVE_TWO": {
+      "POSITION": 2,
+      "ENABLED": false,
+      "DESCRIPTION": "",
+      "GPIO": "26"
+    },
+    "VALVE_THREE": {
+      "POSITION": 3,
+      "ENABLED": false,
+      "DESCRIPTION": "",
+      "GPIO": "29"
+    },
+    "VALVE_FOUR": {
+      "POSITION": 4,
+      "ENABLED": false,
+      "DESCRIPTION": "",
+      "GPIO": "31"
+    }
+  }
 }
