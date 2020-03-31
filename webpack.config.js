@@ -34,11 +34,15 @@ module.exports = {
     alias: {
       actions: path.resolve(__dirname, './src/js/actions/'),
       components: path.resolve(__dirname, './src/js/Components'),
+      config: path.resolve(__dirname, './src/config'),
+      css: path.resolve(__dirname, './src/css'),
       images: path.resolve(__dirname, './src/img'),
       reducers: path.resolve(__dirname, './src/js/reducers'),
+      reduxDir: path.resolve(__dirname, './src/js/redux'),
       root:  path.resolve(__dirname, './'),
       utils: path.resolve(__dirname, './src/js/utils')
-    }
+    },
+    extensions: ['.js', '.json']
   },
   module: {
     rules: [{

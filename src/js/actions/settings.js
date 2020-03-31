@@ -1,5 +1,7 @@
 import actions from 'actions/action-types';
-const superagent = require('superagent');
+import superagent from 'superagent';
+import nocache from 'superagent-no-cache';
+//const superagent = require('superagent');
 //import superagent from 'utils/superagent-promise';
 //import {apiError} from './api';
 
@@ -10,8 +12,51 @@ const superagent = require('superagent');
   text
 })*/
 
+export function updateSettings(path, value) {
+  console.log('begin updateSettings:');
+
+  console.log('settings-path= ' + path);
+  console.log('settings-value= ' + value);
+  //console.log('value:' + JSON.stringify(value));
+
+  superagent
+    .post('/api/settings')
+    .set('Content-Type', 'application/json')
+    .send({"path": path})
+    .send({"value": value})
+    .then(console.log)
+    .catch(console.error);
+}
+
 export function getSettings() {
-  return dispatch => {
+  console.log('Getting settings: ');
+  (async () => {
+    try {
+      const res = await superagent.get('/api/settings');
+      console.log('Got settings: ');
+      console.log(res);
+      console.log('--');
+      return res.body.settings;
+    } catch (err) {
+      console.error(err);
+    }
+  })();
+}
+
+//export default {getSettings}
+{/*export function getSettings() {
+ superagent
+    .get('/api/settings')
+    .use(nocache)
+    .then(res => {
+    })
+    .catch(err => {
+       err.message
+    });
+}*/}
+
+
+  /*return dispatch => {
     dispatch({
       type: actions.GET_SETTINGS_START
     });
@@ -32,9 +77,9 @@ export function getSettings() {
         dispatch(err);
       });
   };
-}
+}*/
 
-export function updateSettings(settings) {
+/* export function updateSettings(settings) {
   console.log('updateSettings:');
   //let sett = JSON.parse(settings);
   console.log(settings);
@@ -60,3 +105,4 @@ export function updateSettings(settings) {
       });
   };
 }
+*/

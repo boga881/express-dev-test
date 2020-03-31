@@ -1,11 +1,10 @@
-
 const express = require('express');
 const multer = require('multer');
 const multipart = multer();
 
 import fs from 'fs';
 //const settingsFile = 'config';
-const settingsFile = '../../../icup.config.json';
+const settingsFile = '../../../user.config.json';
 console.log('settings file:');
 console.log(JSON.stringify(settingsFile));
 const settings = require(settingsFile);
@@ -17,6 +16,10 @@ const config = require('../../../webpack.config.js');
 
 const app = express();
 const port = 8080;
+
+
+const bodyParser = require('body-parser');
+import objectPath from 'object-path';
 
 
 
@@ -43,7 +46,26 @@ if (devServerEnabled) {
   app.use(webpackHotMiddleware(compiler));
 }
 
+function jsonReader(settingsFile, cb) {
+  console.log('attempting to read json file');
+  console.log(JSON.stringify(settings));
+  fs.readFile(settingsFile, (err, fileData) => {
+    if (err) {
+      console.log(err)
+      return cb && cb(err)
+    }
+    try {
+      console.log("===== TRY ++++++");
+      const object = JSON.parse(fileData)
+      return cb && cb(null, object)
+    } catch (err) {
+      return cb && cb(err)
+    }
+  })
+}
+
 app.use(express.static('./dist'));
+app.use(bodyParser.json());
 
 app.post('/api/relayon', multipart.any(), function(req, res) {
 
@@ -56,28 +78,29 @@ app.post('/api/relayon', multipart.any(), function(req, res) {
     });
   }
 
-settings.dan = '123';
-settings.random = 'random';
+  settings.dan = '123';
+  settings.random = 'random';
   writeToConfig();
   res.json('solenoid on');
 
   const loadData = (settingsFile) => {
-  try {
-  return fs.readFileSync(path, 'utf8')
+    try {
+      return fs.readFileSync(path, 'utf8')
       //data = fs.readFileSync(path, 'utf8'),
       //console.log(data),
-  } catch (err) {
-    console.error(err)
-    return false
+    } catch (err) {
+      console.error(err)
+      return false
+    }
   }
-}
 
 
 
 });
 
 app.post('/api/relayoff', multipart.any(), function(req, res) {
-
+  console.log('---- OFF ----')
+  console.log(JSON.stringify(req.body));
   // No switch on dev environment
   if (!devServerEnabled) {
     const Gpio = require('onoff').Gpio;
@@ -114,78 +137,38 @@ app.post('/api/add', multipart.any(), function(req, res) {
 
 
 app.get('/api/settings', (req, res) => {
-  app.storage.getItem(config.SETTINGS_KEY, (err, settings) => {
+  console.log('getting json reader');
+  jsonReader(settings, (err, jsonConfig) => {
     if (err) {
-      app.logger.error(`Unable to get settings - ${err.stack}`);
+      //app.logger.error(`Unable to get settings - ${err.stack}`);
+      console.log('Error: ');
+      console.log(JSON.stringify(err));
       return res.status(500).json({
-        success: false
+        success: false,
+        message: 'Could not get the settings'
       });
+
     }
+
     res.json({
       success: true,
-      settings: settings || getDefaultSettings()
-
+      settings: jsonConfig
     });
-  });
-  console.log('Thesettings: '+ settings);
+  })
 });
 
 app.post('/api/settings', (req, res) => {
-  console.log('server: ' + req.body)
+  console.log("string as argument one", [req])
   if (!req.body) {
+    console.log('Failed to update config');
     return res.status(400).json({
       success: false,
-      message: 'expected JSON body in request'
+      message: 'expected path and value in body request'
     });
   }
 
-  app.storage.getItem(config.SETTINGS_KEY, (err, settings) => {
-    if (err) {
-      app.logger.error(`Unable to get settings - ${err.stack}`);
-      return res.status(500).json({
-        success: false
-      });
-    }
+  writeToConfig(req.body)
 
-    if (!settings) {
-      settings = getDefaultSettings();
-    }
-
-    if (typeof(req.body.shutoffDuration) !== 'undefined') {
-      if (typeof(req.body.shutoffDuration) !== 'number' || req.body.shutoffDuration < 0 || req.body.duration >= 60) {
-        return res.status(400).json({
-          success: false,
-          message: 'Optional field "shutoffDuration" is not a Number between 0 and 60'
-        });
-      }
-      settings.shutoffDuration = req.body.shutoffDuration;
-    }
-
-    if (typeof(req.body.location) !== 'undefined') {
-      if (req.body.location !== null && (typeof(req.body.location.latitude) !== 'number' || typeof(req.body.location.longitude) !== 'number')) {
-        return res.status(400).json({
-          success: false,
-          message: 'Optional field "location" is not a latitude/longitude coordinate pair'
-        });
-      }
-      settings.location = req.body.location;
-    }
-
-
-    app.storage.setItem(config.SETTINGS_KEY, settings, err => {
-      if (err) {
-        app.logger.error(`Unable to apply settings - ${err.stack}`);
-        return res.status(500).json({
-          success: false
-        });
-      }
-      app.scheduler.reload();
-      res.json({
-        success: true,
-        settings
-      });
-    });
-  });
 });
 
 
@@ -195,14 +178,35 @@ app.listen(port, () => {
 });
 
 
-function writeToConfig() {
-  fs.writeFile(settingsFile, JSON.stringify(settings, null, 2), function writeJSON(err) {
+function writeToConfig(body) {
+  jsonReader(settingsFile, (err, jsonConfig) => {
+    if (err) {
+      console.log(err)
+      return
+    }
+    console.log('The original json object:')
+    console.log(jsonConfig)
+    const path = body.path;
+    const value = body.value;
 
-  if (err) {
-    return console.log(err);
-  }
+    console.log('path: ' + path);
+    console.log('value: ' + value);
 
-  console.log(JSON.stringify(settings));
-  console.log('writing to ' + settingsFile);
-});
+    console.log('--------');
+    objectPath.set(jsonConfig, path, value);
+
+
+    console.log('writing to ' + settingsFile);
+    console.log('New settings');
+    console.log(JSON.stringify(jsonConfig, null, 2));
+
+    fs.writeFile(settingsFile, JSON.stringify(jsonConfig, null, 2), (err) => {
+      if (err) {
+        console.log('Error writing file:', err)
+        return
+      }
+      console.log('Update complete...')
+      console.log(settingsFile);
+    })
+  })
 }

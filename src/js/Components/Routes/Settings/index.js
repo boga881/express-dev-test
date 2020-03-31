@@ -6,37 +6,50 @@ import Loading from 'components/Loading';
 import Valves from 'components/Routes/Settings/Valves';
 //import UserLocation from 'Components/UserLocation';
 //import * as clientConfig from 'Utils/client-config';
-import config from 'root/icup.config.json';
+//import clientConfig from 'root/src/js/server/user.config.json';
+import { Checkbox, TextInput, Row, Col } from 'react-materialize';
+
+//let userConfig = require('root/src/js/server/user.config.json');
 
 class SettingsComponent extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      userConfig: {userConfig},
+      pushoverEnabled: userConfig.notifications.pushover.enabled,
+      tabSettings: {
+        duration: 300,
+        onShow: null,
+        responsiveThreshold: Infinity,
+        swipeable: false
+      },
       shutoffDuration: 0,
       location: null,
       checkWeather: false,
       //intialized: this.props.initialized ? this.props.initialized : false,
       isLoading: true
     };
+
+    //this.updateUserConfig = _.debounce(this.updateUserConfig, 1000);
   }
 
   componentDidMount() {
-   //console.log('THE CONFIG: ');
-   //console.log(JSON.stringify(config));
-
+    console.log('did mount');
+    console.log(userConfig);
+    const newUserConfig = getSettings();
+    console.log('settings retreived');
+    /*console.log(JSON.stringify(userConfig.settings));*/
     this.setState({
-      isLoading: false
+      isLoading: false,
+      userConfig: {newUserConfig}
     });
-
-    // if (!this.state.initialized) {
-    //   this.props.dispatch(getSettings());
-    // } else {
-    //   this.setStateFromProps(this.props);
-    // }
   }
 
   componentDidUpdate() {
+    console.log('did update');
+    userConfig = getSettings();
+    console.log('settings updated');
     {/* eslint no-undef:0 */}
     M.updateTextFields();
   }
@@ -88,8 +101,32 @@ class SettingsComponent extends Component {
     });
   }
 
+  handleCheckboxChange(event, e) {
+    const { pushoverEnabled } = this.state;
+    const status = !pushoverEnabled;
+
+    //clientConfig.notifications.pushover.enabled = status;
+    userConfig.notifications.pushover.enabled = status;
+
+    const path = 'notifications.pushover.enabled';
+    const value = status;
+    console.log(clientConfig);
+    console.log(`Checkbox status: ${status}`);
+    this.setState({
+      pushoverEnabled: status
+    });
+    updateSettings(path, value);
+ }
+
+  handleInputChange() {
+    console.log('updating settings...');
+  }
+
+
   render() {
-    const { isLoading, checkWeather } = this.state;
+    const { isLoading, checkWeather, tabSettings, pushoverEnabled } = this.state;
+    {/*const pushover = clientConfig.notifications.pushover;*/}
+    const pushover = userConfig ? userConfig.notifications.pushover : false;
 
     return(
       <React.Fragment>
@@ -106,12 +143,42 @@ class SettingsComponent extends Component {
                   <p>The 8 digit Pin code required to register this device with Apple HomeKit.</p>
                 </div>
               </div>*/}
-              <div className='row'>
-                <div className='col s12'>
+              <Row>
+                <Col s={12}>
+                  <h5>Notifications</h5>
+                  <p>Get notified when events are triggered.</p>
+                  <Checkbox
+                    id="pushover_status"
+                    label="Use Pushover"
+                    value="pushover"
+                    onChange={(e) => this.handleCheckboxChange({pushoverEnabled}, e)}
+                    checked={pushoverEnabled}
+                  />
+                  <TextInput
+                    s={12}
+                    label="Token"
+                    onChange={this.handleInputChange}
+                    placeholder="Pushover token"
+                    defaultValue={pushover.token}
+                    disabled={!pushoverEnabled}
+                  />
+                  <TextInput
+                    s={12}
+                    label="User Key"
+                    onChange={function handleInputChange(){}}
+                    placeholder="Pushover user key "
+                    defaultValue={pushover.userKey}
+                    disabled={!pushoverEnabled}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col s={12}>
+                  <h5>Solonids</h5>
                   <p>Enable multiple valves and their corrisponding GPIO pin using the configuration.</p>
                   <Valves />
-                </div>
-              </div>
+                </Col>
+              </Row>
 
               {/*<div className='row'>
                 <div className='input-field col s12'>

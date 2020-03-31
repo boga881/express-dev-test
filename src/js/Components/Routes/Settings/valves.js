@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-//import tapOrClick from 'react-tap-or-click';
 import { connect } from 'react-redux';
 import { getSettings, updateSettings } from 'actions/settings';
-//import UserLocation from 'Components/UserLocation';
-//import * as clientConfig from 'Utils/client-config';
-import config from 'root/icup.config.json';
-import { Switch, TextInput, Row, Col } from 'react-materialize';
-import { forEach } from 'lodash'
+//import clientConfig from 'root/src/js/server/user.config.json';
+import { Switch, TextInput, Button } from 'react-materialize';
 
 class Valves extends Component {
 
@@ -14,42 +10,29 @@ class Valves extends Component {
     super(props);
     this.state = {
       shutoffDuration: 0,
-
-
-
-
     };
+
+     this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
    console.log('THE CONFIG: ');
-   console.log(JSON.stringify(config));
+   console.log(JSON.stringify(clientConfig));
 
-   _.forEach(config.VALVES, function(value) {
-     console.log(value);
-   });
-
-    this.setState({
-      isLoading: false
-    });
-
-    // if (!this.state.initialized) {
-    //   this.props.dispatch(getSettings());
-    // } else {
-    //   this.setStateFromProps(this.props);
-    // }
   }
 
   componentDidUpdate() {
-    {/* eslint no-undef:0
-    M.updateTextFields(); */}
+    {/* eslint no-undef:0 */}
+    M.updateTextFields();
+    console.log('DID UPDATE: ');
   }
 
-  /*componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
+    console.log('WILL RECEIVE PROPS: ');
     if (nextProps.initialized && !nextProps.updating) {
       this.setStateFromProps(nextProps);
     }
-  }*/
+  }
 
   setStateFromProps(props) {
     this.setState({
@@ -59,34 +42,7 @@ class Valves extends Component {
     });
   }
 
-  handleChangeShutoffDuration = (e) => {
-    const newState = {
-      shutoffDuration: parseInt(e.target.value)
-    };
-    this.setState(newState);
-    this.props.dispatch(updateSettings(newState));
-  }
-
-  handleCheckWeather = (e) => {
-    this.setState({
-      checkWeather: e.target.checked
-    });
-    if (!e.target.checked) {
-      this.props.dispatch(updateSettings({
-        location: null
-      }));
-    }
-  }
-
-  handleChangeLocation = (loc) => {
-    const newState = {
-      location: loc
-    };
-    this.setState(newState);
-    this.props.dispatch(updateSettings(newState));
-  }
-
-  switchChange = (id) => {
+  handleSwitchChange = (id) => {
     //TODO:  Update config.
     const status = !this.state.valve
     console.log(id + ':' + status);
@@ -97,26 +53,20 @@ class Valves extends Component {
     */
   }
 
-  inputChange = (id) => {
+  handleInputChange = (id) => {
     //TODO:  Update config.
-    const status = !this.state.valve
     console.log(`input change: ${id}`);
   }
 
+  handleClick(e) {
+    e.preventDefault();
+    console.log('The link was clicked.');
+  }
+
   render() {
-    //const { isLoading, checkWeather } = this.state;
-    const valve_id = 'VALVE_ONE';
-    const checked = true;
-    const valves = config.VALVES;
-    /*console.log(`VALVES:`);
-    console.log(JSON.stringify(valves));
-    console.log('Checked: '  + checked);
-    console.log('valve render');
-    console.log('valve status:');
-    console.log(config[valve_id]);
-*/
-    const opt = Object.keys(valves).map(key =>
-      <div className={`CONTAINER_${key}`}>
+    const valves = clientConfig.VALVES;
+    const switches = Object.keys(valves).map(key =>
+      <div key={key}>
         <div className={`TITLE_${key}`}>{`Valve ${valves[key].POSITION}`}</div>
         <div className={`input-field col s6 SWITCH_${key}`}>
           <Switch
@@ -128,20 +78,29 @@ class Valves extends Component {
         </div>
         <div className={`input-field col s6 INPUT_${key}`}>
           <TextInput
+            ref="selectFoo"
             label={`Valve ${valves[key].POSITION} GPIO pin`}
-            onChange={function inputChange(key){}}
+            onChange={function handleInputChange(key){}}
             placeholder="GPIO Pin#"
             className="validate"
-            value={valves[key].GPIO}
+            defaultValue={valves[key].GPIO}
             disabled={valves[key].ENABLED ? false : true}
           />
+          <Button
+            node="a"
+            small
+            onClick={this.handleClick}
+            waves="light"
+          >
+          Save
+          </Button>
         </div>
       </div>
     );
 
     return (
       <React.Fragment>
-        {opt}
+        {switches}
       </React.Fragment>
     );
   }
