@@ -12,6 +12,21 @@ import nocache from 'superagent-no-cache';
   text
 })*/
 
+export function getSettings() {
+  // Change to syncronous request
+  console.log('Getting settings: ');
+  (async () => {
+    try {
+      const res = await superagent.get('/api/settings');
+      console.log('Got settings: ');
+      console.log(res);
+      return res.body;
+    } catch (err) {
+      console.error(err);
+    }
+  })();
+}
+
 export function updateSettings(path, value) {
   console.log('begin updateSettings:');
 
@@ -28,20 +43,7 @@ export function updateSettings(path, value) {
     .catch(console.error);
 }
 
-export function getSettings() {
-  console.log('Getting settings: ');
-  (async () => {
-    try {
-      const res = await superagent.get('/api/settings');
-      console.log('Got settings: ');
-      console.log(res);
-      console.log('--');
-      return res.body.settings;
-    } catch (err) {
-      console.error(err);
-    }
-  })();
-}
+
 
 //export default {getSettings}
 {/*export function getSettings() {

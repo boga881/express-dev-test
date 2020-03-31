@@ -13,6 +13,7 @@ module.exports = {
       './src/js/index.js'
     ]
   },
+  devtool: 'inline-source-map',
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',

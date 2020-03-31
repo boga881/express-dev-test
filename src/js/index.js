@@ -42,6 +42,7 @@ function App() {
   {/*<Button />*/}
       {/*<Provider store={store}>*/}
         <SideNav />
+        <Button />
         {/*<TodoApp />*/}
       {/*</Provider>*/}
     </div>

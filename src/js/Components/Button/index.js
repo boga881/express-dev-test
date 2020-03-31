@@ -10,7 +10,7 @@ export default class Button extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
-        userConfig: {},
+        userConfig: null,
         logging: 'No Logging',
         solenoid: 'false'
       };
@@ -22,13 +22,28 @@ export default class Button extends React.Component {
   }
 
   componentDidMount() {
-    this.getUserConfigSettings();
+    //https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html
+    console.log('DID MOUNT!!!!')
+    //this.getUserConfigSettings();
+        this._asyncRequest = this.getUserConfigSettings().then(
+           userConfig => {
+             this._asyncRequest = null;
+             this.setState({userConfig});
+           }
+         );
   }
 
   async getUserConfigSettings() {
     try {
       const config = await getSettings();
-      this.setState({userConfig: config});
+      if (config) {
+        this.setState({userConfig: config});
+        console.log('State updated..... ');
+        console.log(this.state.userConfig);
+      }
+
+      //return config;
+
     } catch(e) {
         console.warn(e);
     }
@@ -122,26 +137,19 @@ export default class Button extends React.Component {
 
   render() {
     const { userConfig } = this.state;
+    console.log("--- userConfig ----");
+    console.log(JSON.stringify(userConfig));
 
-    if (isEmpty(userConfig)) {
+    if (this.state.userConfig === null) {
       return (
-      <React.Fragment>
-      {isLoading &&
-        <Loading />
-      }
-      </React.Fragment>
+        <React.Fragment>
+            <Loading />
+        </React.Fragment>
       );
     }
-    const fuckingSetitng = userConfig.VALVES.defaultShutoffDuration;
-    const isLoading = isEmpty(userConfig);
-    console.log("--- userCOnfig ----");
-    console.log(JSON.stringify(userConfig));
+
     return (
       <React.Fragment>
-      {isLoading &&
-        <Loading />
-      }
-
       <div className='button'>
         <button onClick={this.handleClick}>Click Me</button>
         <br />

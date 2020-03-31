@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:client": "webpack-dev-server --config webpack.config.js",
-    "start": "babel-watch ./src/js/server/server.js"
+    "start": "babel-watch ./server.js"
   },
   "author": "",
   "license": "ISC",
