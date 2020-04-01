@@ -3,25 +3,20 @@ const multer = require('multer');
 const multipart = multer();
 
 import fs from 'fs';
-//const settingsFile = 'config';
-const settingsFile = './config/user.config.json';
-console.log('settings file:');
-console.log(JSON.stringify(settingsFile));
-const settings = require(settingsFile);
+import objectPath from 'object-path';
+
+const userConfigFile = './config/user.config.json';
+const settings = require(userConfigFile);
 
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('./webpack.config.js');
 
+const bodyParser = require('body-parser');
+
 const app = express();
 const port = 8080;
-
-
-const bodyParser = require('body-parser');
-import objectPath from 'object-path';
-
-
 
 //const devServerEnabled = true;
 
@@ -48,8 +43,7 @@ if (devServerEnabled) {
 
 function jsonReader(settingsFile, cb) {
   console.log('attempting to read json file');
-  console.log(JSON.stringify(settings));
-  fs.readFile('./config/user.config.json', 'utf8', (err, fileData) => {
+  fs.readFile(userConfigFile, 'utf8', (err, fileData) => {
     if (err) {
       console.log('===== ERR +++++')
       console.log(err)
@@ -84,7 +78,7 @@ app.post('/api/relayon', multipart.any(), function(req, res) {
   writeToConfig();
   res.json('solenoid on');
 
-  const loadData = (settingsFile) => {
+  const loadData = (userConfigFile) => {
     try {
       return fs.readFileSync(path, 'utf8')
       //data = fs.readFileSync(path, 'utf8'),
@@ -159,6 +153,7 @@ app.get('/api/settings', (req, res) => {
 });
 
 app.post('/api/settings', (req, res) => {
+  let newConfig = null;
   console.log("string as argument one", [req])
   if (!req.body) {
     console.log('Failed to update config');
@@ -168,7 +163,13 @@ app.post('/api/settings', (req, res) => {
     });
   }
 
-  writeToConfig(req.body)
+  newConfig = writeToConfig(req.body);
+  if (newConfig !== null) {
+    return res.status(200).json({
+      success: true,
+      message: newConfig
+    });
+  }
 
 });
 
@@ -180,7 +181,7 @@ app.listen(port, () => {
 
 
 function writeToConfig(body) {
-  jsonReader(settingsFile, (err, jsonConfig) => {
+  jsonReader(userConfigFile, (err, jsonConfig) => {
     if (err) {
       console.log(err)
       return
@@ -197,17 +198,18 @@ function writeToConfig(body) {
     objectPath.set(jsonConfig, path, value);
 
 
-    console.log('writing to ' + settingsFile);
+    console.log('writing to ' + userConfigFile);
     console.log('New settings');
     console.log(JSON.stringify(jsonConfig, null, 2));
 
-    fs.writeFile(settingsFile, JSON.stringify(jsonConfig, null, 2), (err) => {
+    fs.writeFile(userConfigFile, JSON.stringify(jsonConfig, null, 2), (err) => {
       if (err) {
         console.log('Error writing file:', err)
         return
       }
       console.log('Update complete...')
-      console.log(settingsFile);
+      console.log(userConfigFile);
     })
+    return jsonConfig;
   })
 }

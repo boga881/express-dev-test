@@ -42,20 +42,23 @@ export function getSettings() {
   // })();
 }
 
-export function updateSettings(path, value) {
+export function updateSettings(path, value, returnUpdatedConfig = false) {
   console.log('begin updateSettings:');
 
   console.log('settings-path= ' + path);
   console.log('settings-value= ' + value);
-  //console.log('value:' + JSON.stringify(value));
 
   superagent
     .post('/api/settings')
-    .set('Content-Type', 'application/json')
-    .send({"path": path})
-    .send({"value": value})
-    .then(console.log)
-    .catch(console.error);
+    .send({'path': path, 'value': value})
+    .then(res => {
+      console.log('yay got ' + JSON.stringify(res))
+    })
+    .catch(console.log('there was an error posting'));
+
+    if (returnUpdatedConfig) {
+      return getSettings();
+    }
 }
 
 

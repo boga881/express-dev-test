@@ -18,11 +18,10 @@ export default class Button extends React.Component {
       this.handleClick = this.handleClick.bind(this);
       this.handleChange = this.handleChange.bind(this);
       this.selectChange = this.selectChange.bind(this);
-      //this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
+      this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
   }
 
-  componentDidMount() {
-
+  getUserConfigSettings() {
     fetch('/api/settings')
       .then(data => data.json())
       .then(data => {
@@ -30,59 +29,15 @@ export default class Button extends React.Component {
         console.log(data.settings)
         this.setState({ userConfig: data.settings })
       });
-
-    // const data = fetch('/api/settings')
-    //   .then(res =>
-    //     console.log(res.body)
-    //   )
-    //   .then(res =>
-    //     this.setState({ userConfig: res })
-    //   )
-
-    //https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html
-    // console.log('DID MOUNT!!!!')
-    // const settings = getSettingsNew();
-    // console.log(settings);
-
-
-    //this.getUserConfigSettings();
-        // this._asyncRequest = this.getUserConfigSettings().then(
-        //    userConfig => {
-        //      console.log('_asyncRequest');
-        //      console.log(userConfig);
-        //      this._asyncRequest = null;
-        //      this.setState({userConfig});
-        //    }
-        //  );
   }
 
-  // async getUserConfigSettings() {
-  //   try {
-  //     const config = await getSettings();
-  //     console.log('THE CONFIG*****');
-  //     console.log(JSON.stringify(config));
-  //     if (config) {
-  //       //this.setState({userConfig: config});
-  //       console.log('State updated..... ');
-  //       console.log(this.state.userConfig);
-  //     }
-  //
-  //     //return config;
-  //
-  //   } catch(e) {
-  //       console.warn(e);
-  //   }
-  // }
-
-  componentWillMount() {
-    console.log('will mount');
-    //console.log(this.state.userConfig);
+  componentDidMount() {
+    this.getUserConfigSettings();
   }
 
   handleChange(event) {
     this.setState({
-	value: event.target.value,
-	//solenoid: !this.state.solenoid
+	     value: event.target.value
     });
   }
 
@@ -157,11 +112,13 @@ export default class Button extends React.Component {
 
   }
 
+//https://stackoverflow.com/questions/53186430/react-wait-for-server-response
   selectChange(event){
     const newField = 'VALVES.defaultShutoffDuration';
     const newValue = event.target.value;
-    updateSettings(newField, newValue);
-    this.setState({selectValue: newValue});
+    const newConfig = updateSettings(newField, newValue, true);
+    this.setState({userConfig: newConfig);
+
   }
 
   render() {
@@ -179,31 +136,27 @@ export default class Button extends React.Component {
 
     return (
       <React.Fragment>
-        <p>something</p>
-
-
-      <div className='button'>
-        <button onClick={this.handleClick}>Click Me</button>
-        <br />
-        <textarea onChange={this.handleChange} className='text' rows="4" cols="50" value={this.state.logging} />
-        <br/>
-        <div className='row'>
-          <div className='col s12'>
-            <label>Automatic valve shut-off</label>
-            <select ref='shutoffDuration' className='browser-default' onChange={this.selectChange} value={userConfig.VALVES.defaultShutoffDuration}>
-              <option value='0'>Disabled</option>
-              <option value='1'>1 Minute</option>
-              <option value='2'>2 Minutes</option>
-              <option value='5'>5 Minutes</option>
-              <option value='10'>10 Minutes</option>
-              <option value='15'>15 Minutes</option>
-              <option value='30'>30 Minutes</option>
-              <option value='60'>60 Minutes</option>
-            </select>
+        <div className='button'>
+          <button onClick={this.handleClick}>Click Me</button>
+          <br />
+          <textarea onChange={this.handleChange} className='text' rows="4" cols="50" value={this.state.logging} />
+          <br/>
+          <div className='row'>
+            <div className='col s12'>
+              <label>Automatic valve shut-off</label>
+              <select ref='shutoffDuration' className='browser-default' onChange={this.selectChange} value={userConfig.VALVES.defaultShutoffDuration}>
+                <option value='0'>Disabled</option>
+                <option value='1'>1 Minute</option>
+                <option value='2'>2 Minutes</option>
+                <option value='5'>5 Minutes</option>
+                <option value='10'>10 Minutes</option>
+                <option value='15'>15 Minutes</option>
+                <option value='30'>30 Minutes</option>
+                <option value='60'>60 Minutes</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
-      {/**/}
       </React.Fragment>
     );
   }
