@@ -145,7 +145,7 @@ app.get('/api/settings', (req, res) => {
 
     }
 
-    res.json({
+    return res.status(200).json({
       success: true,
       settings: jsonConfig
     });

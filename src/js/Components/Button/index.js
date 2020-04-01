@@ -1,6 +1,6 @@
 import React from 'react';
 const superagent = require('superagent');
-import { getSettings, getSettingsNew, updateSettings } from 'actions/settings.js'
+import { getSettings, updateSettings } from 'actions/settings.js'
 import { isEmpty } from 'lodash';
 import Loading from 'components/Loading';
 //import clientConfig from 'root/src/js/server/user.config.json';
@@ -19,20 +19,34 @@ export default class Button extends React.Component {
       this.handleChange = this.handleChange.bind(this);
       this.selectChange = this.selectChange.bind(this);
       this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
+      this.updateUserConfigSettings = this.updateUserConfigSettings.bind(this);
   }
 
-  getUserConfigSettings() {
-    fetch('/api/settings')
-      .then(data => data.json())
-      .then(data => {
-        console.log('-------return from fetch')
-        console.log(data.settings)
-        this.setState({ userConfig: data.settings })
-      });
+  async getUserConfigSettings() {
+    // @TODO remove Promise.all function
+    let configData = await Promise.all([getSettings()]);
+
+    if (configData[0].success) {
+      const settings = configData[0].message.settings;
+      console.log('------> Got Settings <------');
+      console.log(settings);
+      this.setState({ userConfig: settings })
+    }
+  }
+
+  async updateUserConfigSettings(newField, newValue) {
+    // @TODO remove Promise.all function
+    let newData = await Promise.all([updateSettings(newField, newValue, true)]);
+    if (newData.success) {
+      // update the state with new user config.
+    }
+
+
+
   }
 
   componentDidMount() {
-    this.getUserConfigSettings();
+    let promise = this.getUserConfigSettings();
   }
 
   handleChange(event) {
@@ -116,8 +130,10 @@ export default class Button extends React.Component {
   selectChange(event){
     const newField = 'VALVES.defaultShutoffDuration';
     const newValue = event.target.value;
-    const newConfig = updateSettings(newField, newValue, true);
-    this.setState({userConfig: newConfig);
+    let promise = this.updateUserConfigSettings(newField, newValue);
+    //updateSettings(newField, newValue);
+    //let promise = this.getUserConfigSettings();
+    //this.setState({userConfig: newConfig);
 
   }
 
