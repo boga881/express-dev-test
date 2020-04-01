@@ -39,10 +39,8 @@ function App() {
 
   return (
     <div className="container">
-  {/*<Button />*/}
       {/*<Provider store={store}>*/}
         <SideNav />
-        <Button />
         {/*<TodoApp />*/}
       {/*</Provider>*/}
     </div>

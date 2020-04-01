@@ -11,20 +11,35 @@ import nocache from 'superagent-no-cache';
   id: nextTodoId++,
   text
 })*/
+export function getSettingsNew() {
+  const userConfig = async () =>
+  await fetch('/api/settings')
+    .then(res => (res.ok ? res : Promise.reject(res)))
+    .then(res => res.json())
+}
 
 export function getSettings() {
   // Change to syncronous request
   console.log('Getting settings: ');
-  (async () => {
-    try {
-      const res = await superagent.get('/api/settings');
+
+  const res = superagent
+    .get('/api/settings')
+    .then(res => {
       console.log('Got settings: ');
       console.log(res);
-      return res.body;
-    } catch (err) {
-      console.error(err);
-    }
-  })();
+      return res.body
+    });
+
+  // (async () => {
+  //   try {
+  //     const res = await superagent.get('/api/settings');
+  //     console.log('Got settings: ');
+  //     console.log(res);
+  //     return res.body;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // })();
 }
 
 export function updateSettings(path, value) {

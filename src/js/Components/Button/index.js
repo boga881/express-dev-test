@@ -1,6 +1,6 @@
 import React from 'react';
 const superagent = require('superagent');
-import { getSettings, updateSettings } from 'actions/settings.js'
+import { getSettings, getSettingsNew, updateSettings } from 'actions/settings.js'
 import { isEmpty } from 'lodash';
 import Loading from 'components/Loading';
 //import clientConfig from 'root/src/js/server/user.config.json';
@@ -18,37 +18,66 @@ export default class Button extends React.Component {
       this.handleClick = this.handleClick.bind(this);
       this.handleChange = this.handleChange.bind(this);
       this.selectChange = this.selectChange.bind(this);
-      this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
+      //this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
   }
 
   componentDidMount() {
+
+    fetch('/api/settings')
+      .then(data => data.json())
+      .then(data => {
+        console.log('-------return from fetch')
+        console.log(data.settings)
+        this.setState({ userConfig: data.settings })
+      });
+
+    // const data = fetch('/api/settings')
+    //   .then(res =>
+    //     console.log(res.body)
+    //   )
+    //   .then(res =>
+    //     this.setState({ userConfig: res })
+    //   )
+
     //https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html
-    console.log('DID MOUNT!!!!')
+    // console.log('DID MOUNT!!!!')
+    // const settings = getSettingsNew();
+    // console.log(settings);
+
+
     //this.getUserConfigSettings();
-        this._asyncRequest = this.getUserConfigSettings().then(
-           userConfig => {
-             this._asyncRequest = null;
-             this.setState({userConfig});
-           }
-         );
+        // this._asyncRequest = this.getUserConfigSettings().then(
+        //    userConfig => {
+        //      console.log('_asyncRequest');
+        //      console.log(userConfig);
+        //      this._asyncRequest = null;
+        //      this.setState({userConfig});
+        //    }
+        //  );
   }
 
-  async getUserConfigSettings() {
-    try {
-      const config = await getSettings();
-      if (config) {
-        this.setState({userConfig: config});
-        console.log('State updated..... ');
-        console.log(this.state.userConfig);
-      }
+  // async getUserConfigSettings() {
+  //   try {
+  //     const config = await getSettings();
+  //     console.log('THE CONFIG*****');
+  //     console.log(JSON.stringify(config));
+  //     if (config) {
+  //       //this.setState({userConfig: config});
+  //       console.log('State updated..... ');
+  //       console.log(this.state.userConfig);
+  //     }
+  //
+  //     //return config;
+  //
+  //   } catch(e) {
+  //       console.warn(e);
+  //   }
+  // }
 
-      //return config;
-
-    } catch(e) {
-        console.warn(e);
-    }
+  componentWillMount() {
+    console.log('will mount');
+    //console.log(this.state.userConfig);
   }
-
 
   handleChange(event) {
     this.setState({
@@ -140,7 +169,7 @@ export default class Button extends React.Component {
     console.log("--- userConfig ----");
     console.log(JSON.stringify(userConfig));
 
-    if (this.state.userConfig === null) {
+    if (userConfig === null) {
       return (
         <React.Fragment>
             <Loading />
@@ -150,6 +179,9 @@ export default class Button extends React.Component {
 
     return (
       <React.Fragment>
+        <p>something</p>
+
+
       <div className='button'>
         <button onClick={this.handleClick}>Click Me</button>
         <br />
@@ -171,6 +203,7 @@ export default class Button extends React.Component {
           </div>
         </div>
       </div>
+      {/**/}
       </React.Fragment>
     );
   }

@@ -31,6 +31,6 @@
       "DESCRIPTION": "",
       "GPIO": "31"
     },
-    "defaultShutoffDuration": "60"
+    "defaultShutoffDuration": "15"
   }
 }

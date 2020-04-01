@@ -4,7 +4,7 @@ const multipart = multer();
 
 import fs from 'fs';
 //const settingsFile = 'config';
-const settingsFile = './user.config.json';
+const settingsFile = './config/user.config.json';
 console.log('settings file:');
 console.log(JSON.stringify(settingsFile));
 const settings = require(settingsFile);
@@ -49,7 +49,7 @@ if (devServerEnabled) {
 function jsonReader(settingsFile, cb) {
   console.log('attempting to read json file');
   console.log(JSON.stringify(settings));
-  fs.readFile('./user.config.json', 'utf8', (err, fileData) => {
+  fs.readFile('./config/user.config.json', 'utf8', (err, fileData) => {
     if (err) {
       console.log('===== ERR +++++')
       console.log(err)
