@@ -3,7 +3,7 @@ const superagent = require('superagent');
 import { getSettings, updateSettings } from 'actions/settings.js'
 import { isEmpty } from 'lodash';
 import Loading from 'components/Loading';
-//import clientConfig from 'root/src/js/server/user.config.json';
+const devServerEnabled = process.env.NODE_ENV !== 'production';
 
 
 export default class Button extends React.Component {
@@ -28,21 +28,14 @@ export default class Button extends React.Component {
 
     if (configData[0].success) {
       const settings = configData[0].message.settings;
-      console.log('------> Got Settings <------');
-      console.log(settings);
       this.setState({ userConfig: settings })
     }
   }
 
   async updateUserConfigSettings(newField, newValue) {
     // @TODO remove Promise.all function
-    let newData = await Promise.all([updateSettings(newField, newValue, true)]);
-    if (newData.success) {
-      // update the state with new user config.
-    }
-
-
-
+    let promise = await Promise.all([updateSettings(newField, newValue)]);
+    let newData = this.getUserConfigSettings();
   }
 
   componentDidMount() {
@@ -126,21 +119,20 @@ export default class Button extends React.Component {
 
   }
 
-//https://stackoverflow.com/questions/53186430/react-wait-for-server-response
   selectChange(event){
     const newField = 'VALVES.defaultShutoffDuration';
     const newValue = event.target.value;
     let promise = this.updateUserConfigSettings(newField, newValue);
-    //updateSettings(newField, newValue);
-    //let promise = this.getUserConfigSettings();
-    //this.setState({userConfig: newConfig);
-
   }
 
   render() {
     const { userConfig } = this.state;
-    console.log("--- userConfig ----");
-    console.log(JSON.stringify(userConfig));
+
+    if (devServerEnabled) {
+      console.group("--- userConfig ----");
+      console.log(JSON.stringify(userConfig));
+      console.groupEnd();
+    }
 
     if (userConfig === null) {
       return (

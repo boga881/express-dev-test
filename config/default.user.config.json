@@ -1,15 +1,15 @@
 {
   "notifications": {
     "pushover": {
-      "enabled": true,
-      "token": "aydm8izeric3yof2bqhut994zpfevu",
-      "userKey": "up5PLmNmgVho9gogJpqHXnd4RUNi9v"
+      "enabled": false,
+      "token": "",
+      "userKey": ""
     }
   },
   "VALVES": {
     "VALVE_ONE": {
       "POSITION": 1,
-      "ENABLED": true,
+      "ENABLED": false,
       "DESCRIPTION": "",
       "GPIO": "21"
     },
@@ -31,6 +31,6 @@
       "DESCRIPTION": "",
       "GPIO": "31"
     },
-    "defaultShutoffDuration": "60"
+    "defaultShutoffDuration": "10"
   }
 }

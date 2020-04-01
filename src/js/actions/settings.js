@@ -2,6 +2,7 @@ import actions from 'actions/action-types';
 import superagent from 'superagent';
 import request from "superagent";
 import nocache from 'superagent-no-cache';
+const devServerEnabled = process.env.NODE_ENV !== 'production';
 
 export function getSettings() {
   return request.get('/api/settings')
@@ -26,22 +27,17 @@ export function getSettings() {
     });
 }
 
-export function updateSettings(path, value, returnNewUserConfig = false) {
-  console.log('begin updateSettings:');
-  console.log('settings-path= ' + path);
-  console.log('settings-value= ' + value);
+export function updateSettings(path, value) {
+  if (devServerEnabled) {
+    console.group('Updating Settings:');
+    console.log('path: ' + path);
+    console.log('value: ' + value);
+    console.groupEnd();
+  }
 
   request.post('/api/settings')
     .send({'path': path, 'value': value})
     .then(response => {
-      if (returnNewUserConfig) {
-        console.log('returnNewUserConfig');
-        let newConfig = fetch('/api/settings')
-          .then(response => {
-            return response;
-          });
-
-      }
       if (response.statusCode === 200) {
         return {
           success: true,
@@ -60,12 +56,4 @@ export function updateSettings(path, value, returnNewUserConfig = false) {
         message: err,
       }
     });
-
-//   superagent
-//     .post('/api/settings')
-//     .send({'path': path, 'value': value})
-//     .then(res => {
-//       console.log('yay got ' + JSON.stringify(res))
-//     })
-//     .catch(console.log('there was an error posting'));
 }
