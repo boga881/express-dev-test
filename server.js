@@ -18,8 +18,6 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 8080;
 
-//const devServerEnabled = true;
-
 const devServerEnabled = process.env.NODE_ENV !== 'production';
 
 if (devServerEnabled) {
@@ -45,12 +43,10 @@ function jsonReader(settingsFile, cb) {
   console.log('attempting to read json file');
   fs.readFile(userConfigFile, 'utf8', (err, fileData) => {
     if (err) {
-      console.log('===== ERR +++++')
       console.log(err)
       return cb && cb(err)
     }
     try {
-      console.log("===== TRY ++++++");
       const object = JSON.parse(fileData)
       return cb && cb(null, object)
     } catch (err) {
@@ -132,17 +128,14 @@ app.post('/api/add', multipart.any(), function(req, res) {
 
 
 app.get('/api/settings', (req, res) => {
-  console.log('getting json reader');
   jsonReader(settings, (err, jsonConfig) => {
     if (err) {
-      //app.logger.error(`Unable to get settings - ${err.stack}`);
       console.log('Error: ');
       console.log(JSON.stringify(err));
       return res.status(500).json({
         success: false,
         message: 'Could not get the settings'
       });
-
     }
 
     return res.status(200).json({
@@ -153,8 +146,6 @@ app.get('/api/settings', (req, res) => {
 });
 
 app.post('/api/settings', (req, res) => {
-  let newConfig = null;
-  console.log("string as argument one", [req])
   if (!req.body) {
     console.log('Failed to update config');
     return res.status(400).json({
@@ -163,17 +154,15 @@ app.post('/api/settings', (req, res) => {
     });
   }
 
-  newConfig = writeToConfig(req.body);
-  if (newConfig !== null) {
+  const configUpdated = writeToConfig(req.body);
+  if (configUpdated) {
     return res.status(200).json({
       success: true,
-      message: newConfig
+      message: 'User config updated.'
     });
   }
 
 });
-
-
 
 app.listen(port, () => {
   console.log('Server started on port:' + port);
@@ -184,32 +173,29 @@ function writeToConfig(body) {
   jsonReader(userConfigFile, (err, jsonConfig) => {
     if (err) {
       console.log(err)
-      return
+      return false;
     }
-    console.log('The original json object:')
-    console.log(jsonConfig)
+
     const path = body.path;
     const value = body.value;
-
-    console.log('path: ' + path);
-    console.log('value: ' + value);
-
-    console.log('--------');
     objectPath.set(jsonConfig, path, value);
 
-
-    console.log('writing to ' + userConfigFile);
-    console.log('New settings');
-    console.log(JSON.stringify(jsonConfig, null, 2));
+    if (devServerEnabled) {
+      console.log('Writing new settings to ' + userConfigFile);
+    }
 
     fs.writeFile(userConfigFile, JSON.stringify(jsonConfig, null, 2), (err) => {
       if (err) {
         console.log('Error writing file:', err)
-        return
+        return false;
       }
-      console.log('Update complete...')
-      console.log(userConfigFile);
+
+      if (devServerEnabled) {
+        console.log('New settings update complete:')
+        console.log(userConfigFile);
+      }
+
     })
-    return jsonConfig;
+    return true;
   })
 }

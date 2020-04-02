@@ -10,6 +10,7 @@ import { Router } from 'react-router-dom';
 //import thunk from 'redux-thunk';
 import Button from 'components/Button';
 import SideNav from 'components/SideNav';
+import NavBar from 'components/NavBar';
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 
@@ -40,7 +41,7 @@ function App() {
   return (
     <div className="container">
       {/*<Provider store={store}>*/}
-        <SideNav />
+        <NavBar />
         {/*<TodoApp />*/}
       {/*</Provider>*/}
     </div>
