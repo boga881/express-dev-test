@@ -11,9 +11,11 @@ import { Router } from 'react-router-dom';
 import Button from 'components/Button';
 import SideNav from 'components/SideNav';
 import NavBar from 'components/NavBar';
+
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 
+import '../css/style.scss';
 //import { configureStore } from '@reduxjs/toolkit';
 /*import rootReducer from 'reducers';*/
 

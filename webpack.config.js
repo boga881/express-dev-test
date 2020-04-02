@@ -40,7 +40,7 @@ module.exports = {
       images: path.resolve(__dirname, './src/img'),
       reducers: path.resolve(__dirname, './src/js/reducers'),
       reduxDir: path.resolve(__dirname, './src/js/redux'),
-      root:  path.resolve(__dirname, './'),
+      root: path.resolve(__dirname, './'),
       utils: path.resolve(__dirname, './src/js/utils')
     },
     extensions: ['.js', '.json']
@@ -73,7 +73,7 @@ module.exports = {
         }]
       },
       {
-        test: /\.css?/,
+        test: /\.(sa|sc|c)ss$/,
         use: [
           'style-loader',
           'css-loader',
@@ -85,7 +85,13 @@ module.exports = {
         use: [
           'file-loader',
         ],
-      }
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: [
+          'file-loader',
+        ],
+      },
     ]
   }
 
