@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
 //import Main from 'components/Routes/Main';
-//import Schedule from 'components/Routes/Schedule';
+import Schedule from 'components/Routes/Schedule';
 import Settings from 'components/Routes/Settings';
 //import History from 'Components/Routes/History';
 //import Login from 'components/Routes/Login';
@@ -24,7 +24,7 @@ class NavBar extends Component {
   render() {
 
     return (
-      <React.Fragment>
+      <Router>
         <nav>
           <div class="nav-wrapper blue">
             <a href="#" data-target="slide-out" className="sidenav-trigger">
@@ -32,7 +32,9 @@ class NavBar extends Component {
             </a>
             <a href="#!" class="brand-logo"><i class="material-icons">cloud</i>ICUP</a>
             <ul class="right hide-on-med-and-down">
-              <li><a href="sass.html"><i class="material-icons">search</i></a></li>
+              <li>
+                <Link to="/schedule"><i class="material-icons left">search</i>Schedule</Link>
+              </li>
               <li><a href="badges.html"><i class="material-icons">view_module</i></a></li>
               <li><a href="collapsible.html"><i class="material-icons">refresh</i></a></li>
               <li><a href="mobile.html"><i class="material-icons">more_vert</i></a></li>
@@ -40,7 +42,7 @@ class NavBar extends Component {
           </div>
         </nav>
 
-      <Router>
+
         <div>
           <ul ref={Sidenav => {this.Sidenav = Sidenav;}} id='slide-out' className='sidenav'>
             <li>
@@ -104,14 +106,13 @@ class NavBar extends Component {
         <Switch>
           <Route exact path='/' component={Button} />
           <Route path='/settings' component={Settings} />
-          {/*<Route path='/login' component={Login} />
           <Route path='/schedule' component={Schedule} />
-          <Route path='/history' component={History} />
+          {/*<Route path='/history' component={History} />
+          <Route path='/login' component={Login} />
           <Route component={NotFound} />*/}
         </Switch>
 
       </Router>
-      </React.Fragment>
     );
   }
 }
