@@ -26,18 +26,21 @@ class NavBar extends Component {
     return (
       <Router>
         <nav>
-          <div class="nav-wrapper blue">
+          <div className="nav-wrapper blue">
             <a href="#" data-target="slide-out" className="sidenav-trigger">
               <i className="material-icons">menu</i>
             </a>
-            <a href="#!" class="brand-logo"><i class="material-icons">cloud</i>ICUP</a>
-            <ul class="right hide-on-med-and-down">
+            <a href="#!" className="brand-logo"><i className="material-icons">cloud</i>ICUP</a>
+            <ul className="right hide-on-med-and-down">
               <li>
-                <Link to="/schedule"><i class="material-icons left">search</i>Schedule</Link>
+                <Link to="/schedule"><i className="material-icons left">timer</i>Schedule</Link>
               </li>
-              <li><a href="badges.html"><i class="material-icons">view_module</i></a></li>
-              <li><a href="collapsible.html"><i class="material-icons">refresh</i></a></li>
-              <li><a href="mobile.html"><i class="material-icons">more_vert</i></a></li>
+              <li>
+                <Link to="/history"><i className="material-icons left">history</i>History</Link>
+              </li>
+              <li>
+                <Link to="/settings"><i className="material-icons left">settings</i>Settings</Link>
+              </li>
             </ul>
           </div>
         </nav>
@@ -61,41 +64,26 @@ class NavBar extends Component {
                 </a>
               </div>
             </li>
-            <li>
-              <a href="#!">
-                <i className="material-icons">cloud</i>First Link With Icon
-              </a>
+            <li className='sidenav-close'>
+              <Link to="/history"><i className="material-icons">home</i>Home</Link>
             </li>
             <li className='sidenav-close'>
-              {/*<i className='material-icons left'>*/}
-              <Link to="/schedule">Schedule</Link>
-              {/*</i>*/}
+              <Link to="/schedule"><i className="material-icons">timer</i>Schedule</Link>
             </li>
             <li className='sidenav-close'>
-              {/*<i className='material-icons left'>*/}
-                <Link to="/history">History</Link>
-              {/*</i>*/}
+              <Link to="/history"><i className="material-icons">history</i>History</Link>
             </li>
             <li className='sidenav-close'>
-              {/*<i className='material-icons left'>*/}
-                <Link to="/settings">Settings</Link>
-              {/*</i>*/}
-            </li>
-            <li className='sidenav-close'>
-              {/*<i className='material-icons left'>*/}
-                <Link to="/logout">Logout</Link>
-              {/*</i>*/}
+                <Link to="/settings"><i className="material-icons">settings</i>Settings</Link>
             </li>
             <li>
               <div className="divider" />
             </li>
             <li>
-              <a className="subheader">Subheader</a>
+              <a className="subheader">User</a>
             </li>
-            <li>
-              <a className="waves-effect" href="#!">
-                Third Link With Waves
-              </a>
+            <li className='sidenav-close'>
+              <Link to="/logout" className="waves-effect"><i className="material-icons">account_circle</i>Logout</Link>
             </li>
           </ul>
           {/* <a href="#" data-target="slide-out" className="sidenav-trigger">
