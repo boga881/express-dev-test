@@ -7,7 +7,7 @@ import Settings from 'components/Routes/Settings';
 //import Login from 'components/Routes/Login';
 import Button from 'components/Button';
 import NotFound from 'components/Routes/NotFound';
-import logo from 'images/icon.png';
+import logo from 'images/logo.png';
 import sidebar from 'images/sidebar.jpg';
 
 class SideNav extends Component {

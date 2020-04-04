@@ -6,7 +6,7 @@ import Settings from 'components/Routes/Settings';
 //import History from 'Components/Routes/History';
 //import Login from 'components/Routes/Login';
 import NotFound from 'components/Routes/NotFound';
-import logo from 'images/icon.png';
+import logo from 'images/logo.png';
 import sidebar from 'images/sidebar.jpg';
 
 class Routes extends Component {
