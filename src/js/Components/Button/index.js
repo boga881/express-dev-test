@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 const superagent = require('superagent');
 import { getSettings, updateSettings } from 'actions/settings.js'
-import { isEmpty } from 'lodash';
+//import { isEmpty } from 'lodash';
 import Loading from 'components/Loading';
 const devServerEnabled = process.env.NODE_ENV !== 'production';
 
 
-export default class Button extends React.Component {
+export default class Button extends Component {
   constructor(props) {
       super(props);
       this.state = {

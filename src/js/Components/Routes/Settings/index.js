@@ -1,23 +1,17 @@
 import React, { Component } from 'react';
-//import tapOrClick from 'react-tap-or-click';
-import { connect } from 'react-redux';
-import { getSettings, updateSettings } from 'actions/settings';
+import { getSettings, updateSettings } from 'actions/settings.js'
 import Loading from 'components/Loading';
-import Valves from 'components/Routes/Settings/Valves';
-//import UserLocation from 'Components/UserLocation';
-//import * as clientConfig from 'Utils/client-config';
-//import clientConfig from 'root/src/js/server/user.config.json';
-import { Checkbox, TextInput, Row, Col } from 'react-materialize';
+import { Button, Checkbox, Col, Row, Switch, TextInput } from 'react-materialize';
+const devServerEnabled = process.env.NODE_ENV !== 'production';
 
-//let userConfig = require('root/src/js/server/user.config.json');
-
-class SettingsComponent extends Component {
+export default class SettingsComponent extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      userConfig: {userConfig},
-      pushoverEnabled: userConfig.notifications.pushover.enabled,
+      userConfig: null,
+      isLoading: true,
+      logging: 'No Logging',
       tabSettings: {
         duration: 300,
         onShow: null,
@@ -26,30 +20,39 @@ class SettingsComponent extends Component {
       },
       shutoffDuration: 0,
       location: null,
-      checkWeather: false,
-      //intialized: this.props.initialized ? this.props.initialized : false,
-      isLoading: true
+      checkWeather: false
+
     };
 
-    //this.updateUserConfig = _.debounce(this.updateUserConfig, 1000);
+    this.selectChange = this.selectChange.bind(this);
+    this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
+    this.updateUserConfigSettings = this.updateUserConfigSettings.bind(this);
+  }
+
+  async getUserConfigSettings() {
+    // @TODO remove Promise.all function
+    let configData = await Promise.all([getSettings()]);
+
+    if (configData[0].success) {
+      const settings = configData[0].message.settings;
+      this.setState({
+        userConfig: settings,
+        isLoading: false,
+      })
+    }
+  }
+
+  async updateUserConfigSettings(newField, newValue) {
+    // @TODO remove Promise.all function
+    let promise = await Promise.all([updateSettings(newField, newValue)]);
+    let newData = this.getUserConfigSettings();
   }
 
   componentDidMount() {
-    console.log('did mount');
-    console.log(userConfig);
-    const newUserConfig = getSettings();
-    console.log('settings retreived');
-    /*console.log(JSON.stringify(userConfig.settings));*/
-    this.setState({
-      isLoading: false,
-      userConfig: {newUserConfig}
-    });
+    let promise = this.getUserConfigSettings();
   }
 
   componentDidUpdate() {
-    console.log('did update');
-    userConfig = getSettings();
-    console.log('settings updated');
     {/* eslint no-undef:0 */}
     M.updateTextFields();
   }
@@ -102,51 +105,96 @@ class SettingsComponent extends Component {
   }
 
   handleCheckboxChange(event, e) {
-    const { pushoverEnabled } = this.state;
+    const { userConfig } = this.state;
+    const pushoverEnabled = userConfig.notifications.pushover.enabled;
     const status = !pushoverEnabled;
-
-    //clientConfig.notifications.pushover.enabled = status;
-    userConfig.notifications.pushover.enabled = status;
 
     const path = 'notifications.pushover.enabled';
     const value = status;
-    console.log(clientConfig);
     console.log(`Checkbox status: ${status}`);
-    this.setState({
-      pushoverEnabled: status
-    });
-    updateSettings(path, value);
+    let promise = this.updateUserConfigSettings(path, value);
  }
 
   handleInputChange() {
     console.log('updating settings...');
   }
 
+  selectChange(event){
+    const newField = 'VALVES.defaultShutoffDuration';
+    const newValue = event.target.value;
+    let promise = this.updateUserConfigSettings(newField, newValue);
+  }
+
 
   render() {
-    const { isLoading, checkWeather, tabSettings, pushoverEnabled } = this.state;
+    const { userConfig, isLoading, checkWeather, tabSettings } = this.state;
     {/*const pushover = clientConfig.notifications.pushover;*/}
+
     const pushover = userConfig ? userConfig.notifications.pushover : false;
+
+    if (devServerEnabled) {
+      console.group("--- userConfig ----");
+      console.log(JSON.stringify(userConfig));
+      console.groupEnd();
+    }
+
+    if (userConfig === null) {
+      return (
+        <React.Fragment>
+            <Loading />
+        </React.Fragment>
+      );
+    }
+
+
+    const pushoverEnabled = userConfig.notifications.pushover.enabled;
+    console.log(JSON.stringify('pushoverEnabled: ' + pushoverEnabled));
+
+    const valves = userConfig.VALVES;
+    const switches = Object.keys(valves).map(key =>
+      <div key={key}>
+        <div className={`TITLE_${key}`}>{`Valve ${valves[key].POSITION}`}</div>
+        <div className={`input-field col s6 SWITCH_${key}`}>
+          <Switch
+            offLabel="Disabled"
+            onChange={function switchChange(key){}}
+            onLabel="Enabled"
+            checked={valves[key].ENABLED}
+          />
+        </div>
+        <div className={`input-field col s6 INPUT_${key}`}>
+          <TextInput
+            ref="selectFoo"
+            label={`Valve ${valves[key].POSITION} GPIO pin`}
+            onChange={function handleInputChange(key){}}
+            placeholder="GPIO Pin#"
+            className="validate"
+            defaultValue={valves[key].GPIO}
+            disabled={valves[key].ENABLED ? false : true}
+          />
+          <Button
+            node="a"
+            small
+            onClick={this.handleClick}
+            waves="light"
+          >
+          Save
+          </Button>
+        </div>
+      </div>
+    );
 
     return(
       <React.Fragment>
-        {isLoading &&
-          <Loading />
-        }
 
         {!isLoading &&
           <div className='row'>
             <h3>Settings</h3>
             <form className='col s12'>
-              {/*<div className='row'>
-                <div className='col s12'>
-                  <p>The 8 digit Pin code required to register this device with Apple HomeKit.</p>
-                </div>
-              </div>*/}
               <Row>
                 <Col s={12}>
                   <h5>Notifications</h5>
-                  <p>Get notified when events are triggered.</p>
+                  <p>Get push notifications on your device when events are triggered.</p>
                   <Checkbox
                     id="pushover_status"
                     label="Use Pushover"
@@ -176,25 +224,15 @@ class SettingsComponent extends Component {
                 <Col s={12}>
                   <h5>Solonids</h5>
                   <p>Enable multiple valves and their corrisponding GPIO pin using the configuration.</p>
-                  <Valves />
+                  {switches}
                 </Col>
               </Row>
-
-              {/*<div className='row'>
-                <div className='input-field col s12'>
-                  <label htmlFor="homekit-pin">HomeKit Pin</label>
-                  <input value={clientConfig.HOMEKIT_PINCODE} readOnly={true} id="homekit-pin" type="text" />
-                </div>
-              </div>*/}
-              <div className='row'>
-                <div className='col s12'>
-                  <p>Automatically switch off the valve after a set duration of time. This setting does not affect scheduled waterings.</p>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col s12'>
+              <Row>
+                <Col s={12}>
+                <h5>Automatic valve shut off</h5>
+                  <p>Switch off the valve after a set duration of time. This setting does not affect scheduled waterings.</p>
                   <label>Automatic valve shut-off</label>
-                  <select ref='shutoffDuration' className='browser-default' value={this.state.shutoffDuration} onChange={this.handleChangeShutoffDuration}>
+                  <select ref='shutoffDuration' className='browser-default' onChange={this.selectChange} value={userConfig.VALVES.defaultShutoffDuration}>
                     <option value='0'>Disabled</option>
                     <option value='1'>1 Minute</option>
                     <option value='2'>2 Minutes</option>
@@ -204,37 +242,8 @@ class SettingsComponent extends Component {
                     <option value='30'>30 Minutes</option>
                     <option value='60'>60 Minutes</option>
                   </select>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col s12'>
-                  <p>Check the weather in your location and don't start scheduled waterings if it currently raining.</p>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col s12'>
-                  <p>
-                    <input type='checkbox' id='checkWeather' className='filled-in' onChange={this.handleCheckWeather} checked={this.state.checkWeather} />
-                    <label htmlFor='checkWeather'>Check weather</label>
-
-                    { checkWeather &&
-                      <a className="waves-effect weather-btn btn-flat right" {...tapOrClick(this.handleRefreshLocation)}>
-                        <i className='material-icons left'>refresh</i>
-                        Refresh
-                      </a>
-                    }
-
-                  </p>
-                </div>
-              </div>
-
-              { checkWeather &&
-                <div className='row'>
-                  <div className='col s12'>
-                {/*<UserLocation location={this.state.location} onChange={this.handleChangeLocation} />*/}
-                  </div>
-                </div>
-              }
+                </Col>
+              </Row>
             </form>
           </div>
         }
@@ -243,5 +252,3 @@ class SettingsComponent extends Component {
   }
 
 }
-
-export default connect()(SettingsComponent);
