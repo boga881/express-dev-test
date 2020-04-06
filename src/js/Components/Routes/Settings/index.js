@@ -27,6 +27,7 @@ export default class SettingsComponent extends Component {
     this.selectChange = this.selectChange.bind(this);
     this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
     this.updateUserConfigSettings = this.updateUserConfigSettings.bind(this);
+    this.handleSwitchChange = this.handleSwitchChange.bind(this);
   }
 
   async getUserConfigSettings() {
@@ -125,10 +126,14 @@ export default class SettingsComponent extends Component {
     let promise = this.updateUserConfigSettings(newField, newValue);
   }
 
-  handleSwitchChange = (id) => {
+  handleSwitchChange(id) {
+    const { userConfig } = this.state;
+    const newField = `VALVES.${id}.ENABLED`;
+    const configVal = eval(`userConfig.VALVES.${id}.ENABLED`);
+    const newValue = !configVal;
+    //let promise = this.updateUserConfigSettings(newField, newValue);
   //TODO:  Update config.
-  const status = !this.state.valve
-  console.log(id + ':' + status);
+  console.log(id + ':' + newValue);
   /*
   this.setState({
     [valve]: [status]
@@ -170,7 +175,7 @@ export default class SettingsComponent extends Component {
           <Switch
             id={`switch-${key}`}
             offLabel="Disabled"
-            onChange={function handleSwitchChange(key){}}
+            onClick={() => this.handleSwitchChange(key)}
             onLabel="Enabled"
             checked={valves[key].ENABLED}
           />
