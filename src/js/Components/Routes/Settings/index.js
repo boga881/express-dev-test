@@ -125,6 +125,18 @@ export default class SettingsComponent extends Component {
     let promise = this.updateUserConfigSettings(newField, newValue);
   }
 
+  handleSwitchChange = (id) => {
+  //TODO:  Update config.
+  const status = !this.state.valve
+  console.log(id + ':' + status);
+  /*
+  this.setState({
+    [valve]: [status]
+  });
+  */
+}
+
+
 
   render() {
     const { userConfig, isLoading, checkWeather, tabSettings } = this.state;
@@ -156,8 +168,9 @@ export default class SettingsComponent extends Component {
         <div className={`TITLE_${key}`}>{`Valve ${valves[key].POSITION}`}</div>
         <div className={`input-field col s6 SWITCH_${key}`}>
           <Switch
+            id={`switch-${key}`}
             offLabel="Disabled"
-            onChange={function switchChange(key){}}
+            onChange={function handleSwitchChange(key){}}
             onLabel="Enabled"
             checked={valves[key].ENABLED}
           />
@@ -225,6 +238,8 @@ export default class SettingsComponent extends Component {
                   <h5>Solonids</h5>
                   <p>Enable multiple valves and their corrisponding GPIO pin using the configuration.</p>
                   {switches}
+
+
                 </Col>
               </Row>
               <Row>
