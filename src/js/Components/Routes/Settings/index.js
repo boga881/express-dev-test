@@ -25,31 +25,29 @@ export default class SettingsComponent extends Component {
     };
 
     this.selectChange = this.selectChange.bind(this);
-    this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
-    this.updateUserConfigSettings = this.updateUserConfigSettings.bind(this);
+    //this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
+    //this.updateUserConfigSettings = this.updateUserConfigSettings.bind(this);
   }
 
-  async getUserConfigSettings() {
-    // @TODO remove Promise.all function
-    let configData = await Promise.all([getSettings()]);
+  getUserConfigSettings = async () => {
+    const result = await getSettings()
 
-    if (configData[0].success) {
-      const settings = configData[0].message.settings;
+    if (typeof result !== 'undefined' && result.success) {
+      const settings = result.message.settings;
       this.setState({
         userConfig: settings,
         isLoading: false,
-      })
+      });
     }
   }
 
-  async updateUserConfigSettings(newField, newValue) {
-    // @TODO remove Promise.all function
-    let promise = await Promise.all([updateSettings(newField, newValue)]);
-    let newData = this.getUserConfigSettings();
+  updateUserConfigSettings = async (newField, newValue) => {
+    const update = await updateSettings(newField, newValue)
+    const get = await this.getUserConfigSettings()
   }
 
   componentDidMount() {
-    let promise = this.getUserConfigSettings();
+    const promise = this.getUserConfigSettings();
   }
 
   componentDidUpdate() {
@@ -57,11 +55,11 @@ export default class SettingsComponent extends Component {
     M.updateTextFields();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.initialized && !nextProps.updating) {
-      this.setStateFromProps(nextProps);
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.initialized && !nextProps.updating) {
+  //     this.setStateFromProps(nextProps);
+  //   }
+  // }
 
   setStateFromProps(props) {
     this.setState({
@@ -125,24 +123,17 @@ export default class SettingsComponent extends Component {
     let promise = this.updateUserConfigSettings(newField, newValue);
   }
 
-  handleSwitchChange = (id) => {
-  //TODO:  Update config.
-  const status = !this.state.valve
-  console.log(id + ':' + status);
-  /*
-  this.setState({
-    [valve]: [status]
-  });
-  */
-}
-
-
+  handleSwitchChange = async (id) => {
+    const { userConfig } = this.state;
+    const newField = `VALVES.${id}.ENABLED`;
+    const configVal = eval(`userConfig.VALVES.${id}.ENABLED`);
+    const newValue = !configVal;
+    await this.updateUserConfigSettings(newField, newValue);
+  }
 
   render() {
     const { userConfig, isLoading, checkWeather, tabSettings } = this.state;
-    {/*const pushover = clientConfig.notifications.pushover;*/}
 
-    const pushover = userConfig ? userConfig.notifications.pushover : false;
 
     if (devServerEnabled) {
       console.group("--- userConfig ----");
@@ -158,11 +149,10 @@ export default class SettingsComponent extends Component {
       );
     }
 
-
+    const pushover = userConfig ? userConfig.notifications.pushover : false;
     const pushoverEnabled = userConfig.notifications.pushover.enabled;
-    console.log(JSON.stringify('pushoverEnabled: ' + pushoverEnabled));
-
     const valves = userConfig.VALVES;
+
     const switches = Object.keys(valves).map(key =>
       <div key={key}>
         <div className={`TITLE_${key}`}>{`Valve ${valves[key].POSITION}`}</div>
@@ -170,7 +160,7 @@ export default class SettingsComponent extends Component {
           <Switch
             id={`switch-${key}`}
             offLabel="Disabled"
-            onChange={function handleSwitchChange(key){}}
+            onClick={() => this.handleSwitchChange(key)}
             onLabel="Enabled"
             checked={valves[key].ENABLED}
           />

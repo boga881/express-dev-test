@@ -18,28 +18,28 @@ export default class Button extends Component {
       this.handleClick = this.handleClick.bind(this);
       this.handleChange = this.handleChange.bind(this);
       this.selectChange = this.selectChange.bind(this);
-      this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
-      this.updateUserConfigSettings = this.updateUserConfigSettings.bind(this);
+      //this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
+      //this.updateUserConfigSettings = this.updateUserConfigSettings.bind(this);
   }
 
-  async getUserConfigSettings() {
-    // @TODO remove Promise.all function
-    let configData = await Promise.all([getSettings()]);
+  // async getUserConfigSettings() {
+  //   // @TODO remove Promise.all function
+  //   let configData = await Promise.all([getSettings()]);
+  //
+  //   if (configData[0].success) {
+  //     const settings = configData[0].message.settings;
+  //     this.setState({ userConfig: settings })
+  //   }
+  // }
 
-    if (configData[0].success) {
-      const settings = configData[0].message.settings;
-      this.setState({ userConfig: settings })
-    }
-  }
-
-  async updateUserConfigSettings(newField, newValue) {
-    // @TODO remove Promise.all function
-    let promise = await Promise.all([updateSettings(newField, newValue)]);
-    let newData = this.getUserConfigSettings();
-  }
+  // async updateUserConfigSettings(newField, newValue) {
+  //   // @TODO remove Promise.all function
+  //   let promise = await Promise.all([updateSettings(newField, newValue)]);
+  //   let newData = this.getUserConfigSettings();
+  // }
 
   componentDidMount() {
-    let promise = this.getUserConfigSettings();
+  //  let promise = this.getUserConfigSettings();
   }
 
   handleChange(event) {
@@ -126,25 +126,26 @@ export default class Button extends Component {
   }
 
   render() {
-    const { userConfig } = this.state;
-
-    if (devServerEnabled) {
-      console.group("--- userConfig ----");
-      console.log(JSON.stringify(userConfig));
-      console.groupEnd();
-    }
-
-    if (userConfig === null) {
-      return (
-        <React.Fragment>
-            <Loading />
-        </React.Fragment>
-      );
-    }
+    // const { userConfig } = this.state;
+    //
+    // if (devServerEnabled) {
+    //   console.group("--- userConfig ----");
+    //   console.log(JSON.stringify(userConfig));
+    //   console.groupEnd();
+    // }
+    //
+    // if (userConfig === null) {
+    //   return (
+    //     <React.Fragment>
+    //         <Loading />
+    //     </React.Fragment>
+    //   );
+    // }
 
     return (
       <React.Fragment>
-        <div className='button'>
+      <h3>HOME</h3>
+      {/*  <div className='button'>
           <button onClick={this.handleClick}>Click Me</button>
           <br />
           <textarea onChange={this.handleChange} className='text' rows="4" cols="50" value={this.state.logging} />
@@ -164,7 +165,7 @@ export default class Button extends Component {
               </select>
             </div>
           </div>
-        </div>
+        </div>*/}
       </React.Fragment>
     );
   }

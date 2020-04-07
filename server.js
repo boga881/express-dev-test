@@ -40,7 +40,7 @@ if (devServerEnabled) {
 }
 
 function jsonReader(settingsFile, cb) {
-  console.log('attempting to read json file');
+  console.log('Reading json file...');
   fs.readFile(userConfigFile, 'utf8', (err, fileData) => {
     if (err) {
       console.log(err)
@@ -130,8 +130,7 @@ app.post('/api/add', multipart.any(), function(req, res) {
 app.get('/api/settings', (req, res) => {
   jsonReader(settings, (err, jsonConfig) => {
     if (err) {
-      console.log('Error: ');
-      console.log(JSON.stringify(err));
+      console.log('Error...: ' + JSON.stringify(err));
       return res.status(500).json({
         success: false,
         message: 'Could not get the settings'
@@ -154,13 +153,13 @@ app.post('/api/settings', (req, res) => {
     });
   }
 
-  const configUpdated = writeToConfig(req.body);
-  if (configUpdated) {
-    return res.status(200).json({
-      success: true,
-      message: 'User config updated.'
-    });
-  }
+  writeToConfig(req.body)
+  .then((result) => {
+    res.status(200).send({success: true})
+  })
+  .catch((error) => {
+    res.status(500).send({success: false});
+  });
 
 });
 
@@ -169,7 +168,7 @@ app.listen(port, () => {
 });
 
 
-function writeToConfig(body) {
+async function writeToConfig(body) {
   jsonReader(userConfigFile, (err, jsonConfig) => {
     if (err) {
       console.log(err)
@@ -181,7 +180,7 @@ function writeToConfig(body) {
     objectPath.set(jsonConfig, path, value);
 
     if (devServerEnabled) {
-      console.log('Writing new settings to ' + userConfigFile);
+      console.log('Writing new settings to => ' + userConfigFile);
     }
 
     fs.writeFile(userConfigFile, JSON.stringify(jsonConfig, null, 2), (err) => {
@@ -191,8 +190,7 @@ function writeToConfig(body) {
       }
 
       if (devServerEnabled) {
-        console.log('New settings update complete:')
-        console.log(userConfigFile);
+        console.log('New settings updated to config => ' + userConfigFile);
       }
 
     })
