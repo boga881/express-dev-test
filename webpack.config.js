@@ -5,7 +5,7 @@ module.exports = {
   mode: 'development',
   devServer: {
     contentBase: path.join(__dirname, 'public'),
-    port: 8080,
+    port: 3030,
     host: `localhost`,
   },
   entry: {

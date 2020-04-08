@@ -1,22 +1,20 @@
-const express = require('express');
-const multer = require('multer');
-const multipart = multer();
-
+import express from 'express';
 import fs from 'fs';
 import objectPath from 'object-path';
+import bodyParser from 'body-parser';
 
+import webpack from 'webpack';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
+import config from './webpack.config.js';
+
+const historyFile = './config/history.json';
+const history = require(historyFile);
 const userConfigFile = './config/user.config.json';
 const settings = require(userConfigFile);
 
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
-const config = require('./webpack.config.js');
-
-const bodyParser = require('body-parser');
-
 const app = express();
-const port = 8080;
+const port = 3030;
 
 const devServerEnabled = process.env.NODE_ENV !== 'production';
 
@@ -39,9 +37,94 @@ if (devServerEnabled) {
   app.use(webpackHotMiddleware(compiler));
 }
 
-function jsonReader(settingsFile, cb) {
+app.use(express.static('./dist'));
+app.use(bodyParser.json());
+
+app.listen(port, () => {
+  console.log('Server started on port:' + port);
+});
+
+/*
+ * The API endpoints.
+ */
+app.get('/api/history', (req, res) => {
+  jsonReader(historyFile, (err, jsonFile) => {
+    if (err) {
+      console.log('Error...: ' + JSON.stringify(err));
+      return res.status(500).json({
+        success: false,
+        message: 'Could not get history'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      history: jsonFile
+    });
+  })
+});
+
+app.post('/api/history', (req, res) => {
+  if (!req.body) {
+    console.log('Failed to update history');
+    return res.status(400).json({
+      success: false,
+      message: 'expected history path in body request'
+    });
+  }
+
+  writeToConfig(req.body, historyFile)
+  .then((result) => {
+    res.status(200).send({success: true})
+  })
+  .catch((error) => {
+    res.status(500).send({success: false});
+  });
+
+});
+
+app.get('/api/settings', (req, res) => {
+  jsonReader(userConfigFile, (err, jsonConfig) => {
+    if (err) {
+      console.log('Error...: ' + JSON.stringify(err));
+      return res.status(500).json({
+        success: false,
+        message: 'Could not get the settings'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      settings: jsonConfig
+    });
+  })
+});
+
+app.post('/api/settings', (req, res) => {
+  if (!req.body) {
+    console.log('Failed to update config');
+    return res.status(400).json({
+      success: false,
+      message: 'expected path and value in body request'
+    });
+  }
+
+  writeToConfig(req.body, userConfigFile)
+  .then((result) => {
+    res.status(200).send({success: true})
+  })
+  .catch((error) => {
+    res.status(500).send({success: false});
+  });
+
+});
+
+/*
+ * Custom server methods.
+ */
+function jsonReader(jsonFile, cb) {
   console.log('Reading json file...');
-  fs.readFile(userConfigFile, 'utf8', (err, fileData) => {
+  fs.readFile(jsonFile, 'utf8', (err, fileData) => {
     if (err) {
       console.log(err)
       return cb && cb(err)
@@ -55,9 +138,37 @@ function jsonReader(settingsFile, cb) {
   })
 }
 
-app.use(express.static('./dist'));
-app.use(bodyParser.json());
+async function writeToConfig(body, jsonFile) {
+  jsonReader(jsonFile, (err, jsonConfig) => {
+    if (err) {
+      console.log(err)
+      return false;
+    }
 
+    const path = body.path;
+    const value = body.value;
+    objectPath.set(jsonConfig, path, value);
+
+    if (devServerEnabled) {
+      console.log('Writing new settings to => ' + jsonFile);
+    }
+
+    fs.writeFile(jsonFile, JSON.stringify(jsonConfig, null, 2), (err) => {
+      if (err) {
+        console.log('Error writing file:', err)
+        return false;
+      }
+
+      if (devServerEnabled) {
+        console.log('New settings updated to config => ' + jsonFile);
+      }
+
+    })
+    return true;
+  })
+}
+
+/*
 app.post('/api/relayon', multipart.any(), function(req, res) {
 
   // No switch on dev environment
@@ -107,93 +218,4 @@ app.post('/api/relayoff', multipart.any(), function(req, res) {
   res.json('solenoid off');
 });
 
-
-//API
-app.post('/api/add', multipart.any(), function(req, res) {
-
-  //execute addition(tasizan)
-  const firstValue = parseInt(req.body.firstValue);
-  const secondValue = parseInt(req.body.secondValue);
-  const sum = firstValue + secondValue;
-
-  //return result
-  res.json({
-    sum: sum,
-    firstValue: firstValue,
-    secondValue: secondValue
-  });
-
-});
-
-
-
-app.get('/api/settings', (req, res) => {
-  jsonReader(settings, (err, jsonConfig) => {
-    if (err) {
-      console.log('Error...: ' + JSON.stringify(err));
-      return res.status(500).json({
-        success: false,
-        message: 'Could not get the settings'
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      settings: jsonConfig
-    });
-  })
-});
-
-app.post('/api/settings', (req, res) => {
-  if (!req.body) {
-    console.log('Failed to update config');
-    return res.status(400).json({
-      success: false,
-      message: 'expected path and value in body request'
-    });
-  }
-
-  writeToConfig(req.body)
-  .then((result) => {
-    res.status(200).send({success: true})
-  })
-  .catch((error) => {
-    res.status(500).send({success: false});
-  });
-
-});
-
-app.listen(port, () => {
-  console.log('Server started on port:' + port);
-});
-
-
-async function writeToConfig(body) {
-  jsonReader(userConfigFile, (err, jsonConfig) => {
-    if (err) {
-      console.log(err)
-      return false;
-    }
-
-    const path = body.path;
-    const value = body.value;
-    objectPath.set(jsonConfig, path, value);
-
-    if (devServerEnabled) {
-      console.log('Writing new settings to => ' + userConfigFile);
-    }
-
-    fs.writeFile(userConfigFile, JSON.stringify(jsonConfig, null, 2), (err) => {
-      if (err) {
-        console.log('Error writing file:', err)
-        return false;
-      }
-
-      if (devServerEnabled) {
-        console.log('New settings updated to config => ' + userConfigFile);
-      }
-
-    })
-    return true;
-  })
-}
+*/

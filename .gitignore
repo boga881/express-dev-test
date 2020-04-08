@@ -19,5 +19,6 @@ node_modules
 *.swp
 .DS_Store
 
-#User config file
+#config files
 config/user.config.json
+config/history.json

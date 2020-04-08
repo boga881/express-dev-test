@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-r
 //import Main from 'components/Routes/Main';
 import Schedule from 'components/Routes/Schedule';
 import Settings from 'components/Routes/Settings';
-//import History from 'Components/Routes/History';
+import History from 'components/Routes/History';
 //import Login from 'components/Routes/Login';
 import Button from 'components/Button';
 import NotFound from 'components/Routes/NotFound';
@@ -93,8 +93,8 @@ class NavBar extends Component {
           <Route exact path='/' component={Button} />
           <Route path='/settings' component={Settings} />
           <Route path='/schedule' component={Schedule} />
-          {/*<Route path='/history' component={History} />
-          <Route path='/login' component={Login} />
+          <Route path='/history' component={History} />
+          {/*<Route path='/login' component={Login} />
           <Route component={NotFound} />*/}
         </Switch>
 
