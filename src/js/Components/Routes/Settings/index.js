@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { getSettings, updateSettings } from 'actions/settings.js'
 import Loading from 'components/Loading';
-import { Button, Checkbox, Col, Row, Switch, TextInput } from 'react-materialize';
+import { Button, Checkbox, Col, Row, Select, Switch, TextInput } from 'react-materialize';
 const devServerEnabled = process.env.NODE_ENV !== 'production';
 
 export default class SettingsComponent extends Component {
@@ -11,16 +11,11 @@ export default class SettingsComponent extends Component {
     this.state = {
       userConfig: null,
       isLoading: true,
-      logging: 'No Logging',
-      tabSettings: {
-        duration: 300,
-        onShow: null,
-        responsiveThreshold: Infinity,
-        swipeable: false
+      dropdownOptions: {
+        browserDefault: false,
+        label: "Automatic valve shut-off"
       },
-      shutoffDuration: 0,
-      location: null,
-      checkWeather: false
+      shutoffDuration: 0
 
     };
 
@@ -132,7 +127,7 @@ export default class SettingsComponent extends Component {
   }
 
   render() {
-    const { userConfig, isLoading, checkWeather, tabSettings } = this.state;
+    const { userConfig, isLoading, dropdownOptions } = this.state;
 
 
     if (devServerEnabled) {
@@ -226,18 +221,15 @@ export default class SettingsComponent extends Component {
               <Row>
                 <Col s={12}>
                   <h5>Solonids</h5>
-                  <p>Enable multiple valves and their corrisponding GPIO pin using the configuration.</p>
+                  <p>Enable multiple valves and enter the corrisponding Raspberry Pi GPIO pin.</p>
                   {switches}
-
-
                 </Col>
               </Row>
               <Row>
                 <Col s={12}>
                 <h5>Automatic valve shut off</h5>
                   <p>Switch off the valve after a set duration of time. This setting does not affect scheduled waterings.</p>
-                  <label>Automatic valve shut-off</label>
-                  <select ref='shutoffDuration' className='browser-default' onChange={this.selectChange} value={userConfig.VALVES.defaultShutoffDuration}>
+                  <Select options={dropdownOptions} onChange={this.selectChange} value={userConfig.VALVES.defaultShutoffDuration}>
                     <option value='0'>Disabled</option>
                     <option value='1'>1 Minute</option>
                     <option value='2'>2 Minutes</option>
@@ -246,7 +238,7 @@ export default class SettingsComponent extends Component {
                     <option value='15'>15 Minutes</option>
                     <option value='30'>30 Minutes</option>
                     <option value='60'>60 Minutes</option>
-                  </select>
+                  </Select>
                 </Col>
               </Row>
             </form>

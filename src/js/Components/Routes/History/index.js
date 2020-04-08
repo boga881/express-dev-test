@@ -20,17 +20,11 @@ export default class HistoryComponent extends Component {
 
     if (typeof result !== 'undefined' && result.success) {
       const historyList = result.message.history;
-
-      // let array = Object.keys(historyList).map(key => historyList[key]);
-      // array.sort((itemA, itemB) =>  itemB - itemA);
-      //
-      // let json = {};
-      // for (var i = 0; i < array.length; i++) {
-      //   json[array[i]] = array[i];
-      // }
+      let historySorted = Object.keys(historyList).map(key => historyList[key]);
+      historySorted.sort((a, b) =>  new Date(b.timestamp) - new Date(a.timestamp));
 
       this.setState({
-        history: historyList,
+        history: historySorted,
         isLoading: false,
       });
     }
@@ -43,12 +37,6 @@ export default class HistoryComponent extends Component {
   render() {
     const { history, isLoading } = this.state;
 
-    if (devServerEnabled) {
-      console.group("--- history ----");
-      console.log(JSON.stringify(history));
-      console.groupEnd();
-    }
-
     if (history === null) {
       return (
         <React.Fragment>
@@ -57,41 +45,45 @@ export default class HistoryComponent extends Component {
       );
     }
 
-    return(
-      <React.Fragment>
-        {!isLoading &&
-          <div className='row'>
-            <h3>History</h3>
-            <Row>
-              <Col s={12}>
-                <table className="striped responsive-table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Valve</th>
-                      <th>Action</th>
-                      <th>Zone</th>
-                      <th>Schedule</th>
-                    </tr>
-                  </thead>
+    const emptyHistory = Object.keys(history).length === 0;
 
-                  <tbody>
-                    {Object.keys(history).map((key, i) => (
-                      <tr key={key}>
-                        <td>{moment(key,'x').format('ddd MMM DD, hh:mm:ss a')}</td>
-                        <td>{history[key].source}</td>
-                        <td>{history[key].action}</td>
-                        <td>{history[key].zone}</td>
-                        <td>{history[key].schedule}</td>
-                      </tr>
-                    ))}
-                </tbody>
+    return(
+      <Row>
+        <Col s={12}>
+          <h3>History</h3>
+          <p>All watering events are listed here with the latest at the top.</p>
+
+          {emptyHistory &&
+            <p>Your shedule is currently empty.</p>
+          }
+
+          {!emptyHistory &&
+            <table className="striped responsive-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Valve</th>
+                  <th>Action</th>
+                  <th>Zone</th>
+                  <th>Schedule</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {Object.keys(history).map((key, i) => (
+                  <tr key={history[key].timestamp}>
+                    <td>{moment(history[key].timestamp,'x').format('HH:mm, ddd DD MMM YY')}</td>
+                    <td>{history[key].source}</td>
+                    <td>{history[key].action}</td>
+                    <td>{history[key].zone}</td>
+                    <td>{history[key].schedule}</td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
-            </Col>
-          </Row>
-        </div>
-        }
-      </React.Fragment>
+          }
+        </Col>
+      </Row>
     );
   }
 
