@@ -1,12 +1,5 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
-//import Main from 'components/Routes/Main';
-import Schedule from 'components/Routes/Schedule';
-import Settings from 'components/Routes/Settings';
-import History from 'components/Routes/History';
-//import Login from 'components/Routes/Login';
-import Button from 'components/Button';
-import NotFound from 'components/Routes/NotFound';
 import logo from 'images/logo.png';
 import icon from 'images/icon32x32.png';
 import sidebar from 'images/sidebar.jpg';
@@ -25,7 +18,7 @@ class NavBar extends Component {
   render() {
 
     return (
-      <Router>
+      <React.Fragment>
         <nav>
           <div className="nav-wrapper blue">
             <a href="#" data-target="slide-out" className="sidenav-trigger">
@@ -88,31 +81,9 @@ class NavBar extends Component {
              <i className="material-icons">menu</i>
            </a>*/}
         </div>
-
-        <Switch>
-          <Route exact path='/' component={Button} />
-          <Route path='/settings' component={Settings} />
-          <Route path='/schedule' component={Schedule} />
-          <Route path='/history' component={History} />
-          {/*<Route path='/login' component={Login} />
-          <Route component={NotFound} />*/}
-        </Switch>
-
-      </Router>
+      </React.Fragment>
     );
   }
 }
 
 export default NavBar;
-
-//icon attribution
-//Icons made by <a href="https://www.flaticon.com/<?=_('authors/')?>bqlqn" title="bqlqn">bqlqn</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
-
-//watering can
-//Icons made by <a href="https://www.flaticon.com/<?=_('authors/')?>freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
-
-//droplet
-//Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
-
-//colourful droplet
-//<div>Icons made by <a href="https://www.flaticon.com/<?=_('authors/')?>smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
