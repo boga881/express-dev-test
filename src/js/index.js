@@ -5,7 +5,6 @@ import Schedule from 'components/Routes/Schedule';
 import Settings from 'components/Routes/Settings';
 import History from 'components/Routes/History';
 import Button from 'components/Button';
-import SideNav from 'components/SideNav';
 import NavBar from 'components/NavBar';
 
 import M from "materialize-css";
