@@ -28,16 +28,15 @@ export async function getSchedules() {
     });
 }
 
-export function updateSchedule(path, value) {
+export function updateSchedule(data) {
   if (devServerEnabled) {
     console.group('Updating Schedule:');
-    console.log('path: ' + path);
-    console.log('value: ' + value);
+    console.log('schedule data: ' + JSON.stringify(data));
     console.groupEnd();
   }
 
   const res = request.post('/api/schedule')
-    .send({'path': path, 'value': value})
+    .send({'data': data})
     .set('accept', 'json')
     .end((err, res) => {
       if (res.statusCode === 200) {
@@ -49,6 +48,31 @@ export function updateSchedule(path, value) {
         return {
           success: false,
           message: 'error occured updating schedule',
+        }
+      }
+    });
+}
+
+export function removeSchedule(data) {
+  if (devServerEnabled) {
+    console.group('Removing Schedule:');
+    console.log('schedule id: ' + JSON.stringify(data));
+    console.groupEnd();
+  }
+
+  const res = request.post('/api/schedule/remove')
+    .send({'data': data})
+    .set('accept', 'json')
+    .end((err, res) => {
+      if (res.statusCode === 200) {
+        return {
+          success: true,
+          message: 'schedule removed',
+        }
+      } else {
+        return {
+          success: false,
+          message: 'error occured removing schedule',
         }
       }
     });

@@ -13,7 +13,7 @@ const history = require(historyFile);
 const userConfigFile = './config/user.config.json';
 const settings = require(userConfigFile);
 const scheduleFile = './config/schedules.json';
-const schedule = require(historyFile);
+const schedule = require(scheduleFile);
 
 const app = express();
 const port = 3030;
@@ -133,7 +133,7 @@ app.get('/api/schedule', (req, res) => {
 
     return res.status(200).json({
       success: true,
-      settings: jsonConfig
+      schedule: jsonConfig
     });
   })
 });
@@ -147,7 +147,26 @@ app.post('/api/schedule', (req, res) => {
     });
   }
 
-  writeToConfig(req.body, scheduleFile)
+  writeToSchedule(req.body, scheduleFile, 'add')
+  .then((result) => {
+    res.status(200).send({success: true})
+  })
+  .catch((error) => {
+    res.status(500).send({success: false});
+  });
+
+});
+
+app.post('/api/schedule/remove', (req, res) => {
+  if (!req.body) {
+    console.log('Failed to remove schedule');
+    return res.status(400).json({
+      success: false,
+      message: 'expected path and value in body request'
+    });
+  }
+
+  writeToSchedule(req.body, scheduleFile, 'remove')
   .then((result) => {
     res.status(200).send({success: true})
   })
@@ -176,6 +195,48 @@ function jsonReader(jsonFile, cb) {
   })
 }
 
+async function writeToSchedule(body, jsonFile, type) {
+  jsonReader(jsonFile, (err, jsonConfig) => {
+    if (err) {
+      console.log(err)
+      return false;
+    }
+
+    if (type === 'add') {
+      const path = body.data.name;
+      const value = body.data;
+      objectPath.set(jsonConfig, path, value);
+    }
+
+    if (type === 'remove') {
+      objectPath.del(jsonConfig, body.data);
+    }
+
+    // if (objectPath.has(jsonConfig, path)) {
+    //   objectPath.set(jsonConfig, path, value);
+    // }
+
+
+
+    if (devServerEnabled) {
+      console.log('Writing new schedule to => ' + jsonFile);
+    }
+
+    fs.writeFile(jsonFile, JSON.stringify(jsonConfig, null, 2), (err) => {
+      if (err) {
+        console.log('Error writing file:', err)
+        return false;
+      }
+
+      if (devServerEnabled) {
+        console.log('New settings updated to config => ' + jsonFile);
+      }
+
+    })
+    return true;
+  })
+}
+
 async function writeToConfig(body, jsonFile) {
   jsonReader(jsonFile, (err, jsonConfig) => {
     if (err) {
@@ -183,7 +244,7 @@ async function writeToConfig(body, jsonFile) {
       return false;
     }
 
-    const path = body.path;
+    const path = body.name;
     const value = body.value;
     objectPath.set(jsonConfig, path, value);
 
