@@ -6,30 +6,30 @@
       "userKey": ""
     }
   },
-  "VALVES": {
+  "valves": {
     "VALVE_ONE": {
-      "POSITION": 1,
-      "ENABLED": false,
-      "DESCRIPTION": "",
-      "GPIO": "21"
+      "position": 1,
+      "enabled": false,
+      "description": "",
+      "gpio": "21"
     },
     "VALVE_TWO": {
-      "POSITION": 2,
-      "ENABLED": false,
-      "DESCRIPTION": "",
-      "GPIO": "26"
+      "position": 2,
+      "enabled": false,
+      "description": "",
+      "gpio": "26"
     },
     "VALVE_THREE": {
-      "POSITION": 3,
-      "ENABLED": false,
-      "DESCRIPTION": "",
-      "GPIO": "29"
+      "position": 3,
+      "enabled": false,
+      "description": "",
+      "gpio": "29"
     },
     "VALVE_FOUR": {
-      "POSITION": 4,
-      "ENABLED": false,
-      "DESCRIPTION": "",
-      "GPIO": "31"
+      "position": 4,
+      "enabled": false,
+      "description": "",
+      "gpio": "31"
     },
     "defaultShutoffDuration": "10"
   }

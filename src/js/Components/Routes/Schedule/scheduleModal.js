@@ -62,18 +62,17 @@ export default class scheduleModal extends Component {
       }
     });
 
-    //console.log(JSON.stringify(scheduleItem));
     M.Modal.getInstance($(`#${modalId}`)).close();
     this.props.onScheduleChange(scheduleItem);
   }
 
   render() {
     const { modalOptions, timePickerOptions } = this.state;
-    const { buttonTitle, modalId } = this.props;
+    const { buttonTitle, modalId, valveOptions} = this.props;
 
     return(
       <Modal
-        header="New Schedule"
+        header={`${buttonTitle} Schedule`}
         id={modalId}
         options={modalOptions}
         trigger={<Button node="button" waves="light">{buttonTitle}<Icon right>playlist_add</Icon></Button>}
@@ -85,7 +84,10 @@ export default class scheduleModal extends Component {
         <Row>
           <Col s={12}>
             <form id="schedule" onSubmit={this.handleModalSave}>
+              <p className="range-field">Duration (minutes)</p>
               <Range id="schedule-duration" itemname="duration" min="1" max="120" name="schedule-duration" />
+
+
               <TextInput id="schedule-name" itemname="name" label="Schedule Name" required={true} validate={true} />
 
               <TimePicker
@@ -105,6 +107,12 @@ export default class scheduleModal extends Component {
                 <option value='5'>Thursday</option>
                 <option value='6'>Friday</option>
                 <option value='7'>Saturday</option>
+              </Select>
+
+              <Select id="schedule-valve" itemname="valve" label="Valve" required={true} validate={true}>
+                {Object.keys(valveOptions).map((key, i) => (
+                  <option key={key} value={key}>{valveOptions[key].position}</option>
+                ))}
               </Select>
 
             </form>

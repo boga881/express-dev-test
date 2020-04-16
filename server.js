@@ -12,6 +12,8 @@ const historyFile = './config/history.json';
 const history = require(historyFile);
 const userConfigFile = './config/user.config.json';
 const settings = require(userConfigFile);
+const scheduleFile = './config/schedules.json';
+const schedule = require(historyFile);
 
 const app = express();
 const port = 3030;
@@ -110,6 +112,42 @@ app.post('/api/settings', (req, res) => {
   }
 
   writeToConfig(req.body, userConfigFile)
+  .then((result) => {
+    res.status(200).send({success: true})
+  })
+  .catch((error) => {
+    res.status(500).send({success: false});
+  });
+
+});
+
+app.get('/api/schedule', (req, res) => {
+  jsonReader(scheduleFile, (err, jsonConfig) => {
+    if (err) {
+      console.log('Error...: ' + JSON.stringify(err));
+      return res.status(500).json({
+        success: false,
+        message: 'Could not get the schedule'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      settings: jsonConfig
+    });
+  })
+});
+
+app.post('/api/schedule', (req, res) => {
+  if (!req.body) {
+    console.log('Failed to update schedule');
+    return res.status(400).json({
+      success: false,
+      message: 'expected path and value in body request'
+    });
+  }
+
+  writeToConfig(req.body, scheduleFile)
   .then((result) => {
     res.status(200).send({success: true})
   })

@@ -113,15 +113,15 @@ export default class SettingsComponent extends Component {
   }
 
   selectChange(event){
-    const newField = 'VALVES.defaultShutoffDuration';
+    const newField = 'valves.defaultShutoffDuration';
     const newValue = event.target.value;
     let promise = this.updateUserConfigSettings(newField, newValue);
   }
 
   handleSwitchChange = async (id) => {
     const { userConfig } = this.state;
-    const newField = `VALVES.${id}.ENABLED`;
-    const configVal = eval(`userConfig.VALVES.${id}.ENABLED`);
+    const newField = `valves.${id}.enabled`;
+    const configVal = eval(`userConfig.valves.${id}.enabled`);
     const newValue = !configVal;
     await this.updateUserConfigSettings(newField, newValue);
   }
@@ -146,29 +146,29 @@ export default class SettingsComponent extends Component {
 
     const pushover = userConfig ? userConfig.notifications.pushover : false;
     const pushoverEnabled = userConfig.notifications.pushover.enabled;
-    const valves = userConfig.VALVES;
+    const valves = userConfig.valves;
 
     const switches = Object.keys(valves).map(key =>
       <div key={key}>
-        <div className={`TITLE_${key}`}>{`Valve ${valves[key].POSITION}`}</div>
+        <div className={`TITLE_${key}`}>{`Valve ${valves[key].position}`}</div>
         <div className={`input-field col s6 SWITCH_${key}`}>
           <Switch
             id={`switch-${key}`}
             offLabel="Disabled"
             onClick={() => this.handleSwitchChange(key)}
             onLabel="Enabled"
-            checked={valves[key].ENABLED}
+            checked={valves[key].enabled}
           />
         </div>
         <div className={`input-field col s6 INPUT_${key}`}>
           <TextInput
             ref="selectFoo"
-            label={`Valve ${valves[key].POSITION} GPIO pin`}
+            label={`Valve ${valves[key].position} gpio pin`}
             onChange={function handleInputChange(key){}}
-            placeholder="GPIO Pin#"
+            placeholder="gpio Pin#"
             className="validate"
-            defaultValue={valves[key].GPIO}
-            disabled={valves[key].ENABLED ? false : true}
+            defaultValue={valves[key].gpio}
+            disabled={valves[key].enabled ? false : true}
           />
           <Button
             node="a"
@@ -221,7 +221,7 @@ export default class SettingsComponent extends Component {
               <Row>
                 <Col s={12}>
                   <h5>Solonids</h5>
-                  <p>Enable multiple valves and enter the corrisponding Raspberry Pi GPIO pin.</p>
+                  <p>Enable multiple valves and enter the corrisponding Raspberry Pi gpio pin.</p>
                   {switches}
                 </Col>
               </Row>
@@ -229,7 +229,7 @@ export default class SettingsComponent extends Component {
                 <Col s={12}>
                 <h5>Automatic valve shut off</h5>
                   <p>Switch off the valve after a set duration of time. This setting does not affect scheduled waterings.</p>
-                  <Select options={dropdownOptions} onChange={this.selectChange} value={userConfig.VALVES.defaultShutoffDuration}>
+                  <Select options={dropdownOptions} onChange={this.selectChange} value={userConfig.valves.defaultShutoffDuration}>
                     <option value='0'>Disabled</option>
                     <option value='1'>1 Minute</option>
                     <option value='2'>2 Minutes</option>

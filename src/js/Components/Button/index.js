@@ -120,7 +120,7 @@ export default class Button extends Component {
   }
 
   selectChange(event){
-    const newField = 'VALVES.defaultShutoffDuration';
+    const newField = 'valves.defaultShutoffDuration';
     const newValue = event.target.value;
     let promise = this.updateUserConfigSettings(newField, newValue);
   }
@@ -153,7 +153,7 @@ export default class Button extends Component {
           <div className='row'>
             <div className='col s12'>
               <label>Automatic valve shut-off</label>
-              <select ref='shutoffDuration' className='browser-default' onChange={this.selectChange} value={userConfig.VALVES.defaultShutoffDuration}>
+              <select ref='shutoffDuration' className='browser-default' onChange={this.selectChange} value={userConfig.valves.defaultShutoffDuration}>
                 <option value='0'>Disabled</option>
                 <option value='1'>1 Minute</option>
                 <option value='2'>2 Minutes</option>
