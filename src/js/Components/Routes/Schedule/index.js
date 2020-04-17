@@ -73,6 +73,8 @@ export default class ScheduleComponent extends Component {
       );
     }
 
+    const isEmptySchedules = _.isEmpty(schedules);
+
     return(
       <Row>
         <Col s={12}>
@@ -95,10 +97,10 @@ export default class ScheduleComponent extends Component {
           }
 
           {!valveListEmpty &&
-            <ScheduleModal key="new" onScheduleChange={this.handleSchedule} buttonTitle={"Add"} buttonIcon={"playlist_add"} modalId={"schedule-add"} valveOptions={valveList} name={''}/>
+            <ScheduleModal key={'schedule-add'} onScheduleChange={this.handleSchedule} buttonTitle={"Add"} buttonIcon={"playlist_add"} modalId={"schedule-add"} valveOptions={valveList} name={"name"} />
           }
 
-          { schedules !== null &&
+          { !isEmptySchedules &&
             <table className="striped responsive-table">
               <thead>
                 <tr>
@@ -120,7 +122,7 @@ export default class ScheduleComponent extends Component {
                     <td>{schedules[key].duration}</td>
                     <td>{schedules[key].days}</td>
                     <td>{schedules[key].valve}</td>
-                    <td><ScheduleModal key={schedules[key].name} onScheduleChange={this.handleSchedule} buttonTitle={"Edit"}  buttonIcon={""} modalId={"schedule-add"} valveOptions={valveList} name={schedules[key].name}/></td>
+                    <td><ScheduleModal key={schedules[key].name} onScheduleChange={this.handleSchedule} buttonTitle={"Edit"}  buttonIcon={""} modalId={`schedule-${schedules[key].name}`} valveOptions={valveList} name={schedules[key].name}/></td>
                     <td><Button className="left red" id={(schedules[key].name)} onClick={this.deleteSchedule}>Delete</Button></td>
                   </tr>
                 ))}

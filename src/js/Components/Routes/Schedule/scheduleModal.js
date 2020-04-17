@@ -44,6 +44,8 @@ export default class scheduleModal extends Component {
   handleModalSave(e) {
     const { modalId } = this.props;
 
+    console.log('is saving');
+
     e.preventDefault();
     let scheduleItem = {};
     const items = e.target;
@@ -91,7 +93,6 @@ export default class scheduleModal extends Component {
             <form id="schedule" onSubmit={this.handleModalSave}>
               <p className="range-field">Duration (minutes)</p>
               <Range id="schedule-duration" itemname="duration" min="1" max="120" name="schedule-duration" />
-
 
               <TextInput id="schedule-name" itemname="name" label="Schedule Name" required={true} validate={true} />
 
