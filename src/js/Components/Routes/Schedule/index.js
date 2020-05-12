@@ -84,7 +84,7 @@ const remove = await removeSchedule(id);
     const { history, isLoading, valveList, valveListEmpty, schedules } = this.state;
 
 
-    if (!isLoading === null) {
+    if (!isLoading === null || valveList === null) {
       return (
         <React.Fragment>
             <Loading />
@@ -124,7 +124,7 @@ const remove = await removeSchedule(id);
             //<ScheduleModal key="new" onScheduleChange={this.handleSchedule} buttonTitle={"Add"} buttonIcon={"playlist_add"} modalId={"schedule-add"} valveOptions={valveList} name={''}/>
           }
 
-          { (schedules !== null && !valveListEmpty)  &&
+          { (schedules !== null)  &&
             <table className="striped responsive-table">
               <thead>
                 <tr>
