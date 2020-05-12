@@ -68,21 +68,26 @@ export default class scheduleModal extends Component {
     this.props.onScheduleChange(scheduleItem);
   }
 
-  handleInputChange = (event) => {
-    this.setState({value: event.target.value});
-  }
+  // handleInputChange = (event) => {
+  //   this.setState({value: event.target.value});
+  // }
+
 
   render() {
     const { modalOptions, timePickerOptions } = this.state;
+    //const { buttonTitle, buttonIcon, modalId, valveOptions } = this.props;
     const { buttonTitle, buttonIcon, modalId, valveOptions } = this.props;
 
+
     console.log(`name: ${this.props.name}`);
+    const trigger = `trigger-${modalId}`
     return(
       <Modal
         header={`${buttonTitle} Schedule`}
         id={modalId}
         options={modalOptions}
-        trigger={<Button node="button" waves="light">{buttonTitle}<Icon right>{buttonIcon}</Icon></Button>}
+        trigger={<Button id={trigger} node="button" waves="light">{buttonTitle}<Icon right>playlist_add</Icon></Button>}
+        //trigger={<Button node="button" waves="light">{buttonTitle}<Icon right>{buttonIcon}</Icon></Button>}
         actions={[
           <Button modal="close" node="button" className="left red">Cancel</Button>,
           <Button type="submit" form="schedule" node="button" className="modal-action green">{buttonTitle}</Button>

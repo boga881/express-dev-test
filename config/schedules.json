@@ -1,1 +1,10 @@
-{}
+{
+  "test-schedule": {
+    "created": 123456789,
+    "name": "test schedule",
+    "start": 900,
+    "duration": 30,
+    "days": [2, 4],
+    "valve": 1
+  }
+}

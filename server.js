@@ -15,6 +15,7 @@ const settings = require(userConfigFile);
 const scheduleFile = './config/schedules.json';
 const schedule = require(scheduleFile);
 
+
 const app = express();
 const port = 3030;
 
@@ -76,12 +77,16 @@ app.post('/api/history', (req, res) => {
   }
 
   writeToConfig(req.body, historyFile)
-  .then((result) => {
-    res.status(200).send({success: true})
-  })
-  .catch((error) => {
-    res.status(500).send({success: false});
-  });
+    .then((result) => {
+      res.status(200).send({
+        success: true
+      })
+    })
+    .catch((error) => {
+      res.status(500).send({
+        success: false
+      });
+    });
 
 });
 
@@ -112,12 +117,16 @@ app.post('/api/settings', (req, res) => {
   }
 
   writeToConfig(req.body, userConfigFile)
-  .then((result) => {
-    res.status(200).send({success: true})
-  })
-  .catch((error) => {
-    res.status(500).send({success: false});
-  });
+    .then((result) => {
+      res.status(200).send({
+        success: true
+      })
+    })
+    .catch((error) => {
+      res.status(500).send({
+        success: false
+      });
+    });
 
 });
 
@@ -148,12 +157,16 @@ app.post('/api/schedule', (req, res) => {
   }
 
   writeToSchedule(req.body, scheduleFile, 'add')
-  .then((result) => {
-    res.status(200).send({success: true})
-  })
-  .catch((error) => {
-    res.status(500).send({success: false});
-  });
+    .then((result) => {
+      res.status(200).send({
+        success: true
+      })
+    })
+    .catch((error) => {
+      res.status(500).send({
+        success: false
+      });
+    });
 
 });
 
@@ -167,12 +180,17 @@ app.post('/api/schedule/remove', (req, res) => {
   }
 
   writeToSchedule(req.body, scheduleFile, 'remove')
-  .then((result) => {
-    res.status(200).send({success: true})
-  })
-  .catch((error) => {
-    res.status(500).send({success: false});
-  });
+
+    .then((result) => {
+      res.status(200).send({
+        success: true
+      })
+    })
+    .catch((error) => {
+      res.status(500).send({
+        success: false
+      });
+    });
 
 });
 
