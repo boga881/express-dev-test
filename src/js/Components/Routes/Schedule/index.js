@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-//import { getHistory } from 'actions/history.js'
 import { getSchedules, updateSchedule, removeSchedule } from 'actions/schedule.js'
 import { getSettings } from 'actions/settings.js'
 import Loading from 'components/Loading';
@@ -51,54 +50,42 @@ export default class ScheduleComponent extends Component {
     }
   }
 
-  getSchedulesFromConfig = async () => {
-  const result = await getSchedules();
+  updateScheduleToConfig = async (data, type) => {
+    if (type === 'remove') {
+      const remove = await removeSchedule(data);
+    } else if (type === 'update') {
+      const update = await updateSchedule(data);
+    }
 
-  if (typeof result !== 'undefined' && result.success) {
-    console.log(JSON.stringify(result.message));
-    this.setState({
-      schedules: result.message.schedule,
-      isLoading: false,
-    });
-  }
-}
-
-
-handleSchedule = async (data) => {
-
-    console.log(JSON.stringify(data));
-    const update = await updateSchedule(data);
-}
-
-deleteSchedule = async (event) => {
-const id = event.target.id;
-console.log(`delete ${id}`);
-const remove = await removeSchedule(id);
-  //const update = await updateSchedule(data);
-
+    const schedules = this.getSchedulesFromConfig();
   }
 
+  doUpdateSchedule(event, type) {
+    // this.setState({
+    //   isLoading: true,
+    // });
+
+    let data = event
+    if (type === 'remove') {
+      data = event.target.id;
+    }
+    const promise = this.updateScheduleToConfig(data, type);
+  }
 
   render() {
-    //const { history, isLoading, valveList, valveListEmpty } = this.state;
     const { history, isLoading, valveList, valveListEmpty, schedules } = this.state;
-
 
     if (!isLoading === null || valveList === null) {
       return (
-        <React.Fragment>
-            <Loading />
-        </React.Fragment>
+        <Loading />
       );
     }
-
-    const isEmptySchedules = _.isEmpty(schedules);
 
     return(
       <Row>
         <Col s={12}>
           <h3>Schedule</h3>
-          <p>You current schedules are listed below. New schedules can be added using the add button.</p>
+          <p>Your current schedules are listed below. New schedules can be added using the add button.</p>
 
           {valveListEmpty &&
             <Card
@@ -117,70 +104,42 @@ const remove = await removeSchedule(id);
 
           }
 
-          {!valveListEmpty &&
-            <ScheduleModal key='new-schedule' onScheduleChange={this.handleSchedule} buttonTitle={"Add"} modalId={"schedule-add"} valveOptions={valveList}/>
-
-            //<ScheduleModal onScheduleChange={this.handleSchedule} buttonTitle={"Add"} modalId={"schedule-add"} valveOptions={valveList}/>
-            //<ScheduleModal key="new" onScheduleChange={this.handleSchedule} buttonTitle={"Add"} buttonIcon={"playlist_add"} modalId={"schedule-add"} valveOptions={valveList} name={''}/>
+          { schedules !== null  &&
+            <div>
+              <ScheduleModal key={Math.random()} onScheduleChange={(e) => this.doUpdateSchedule(e, 'update')} buttonTitle={"Add"} modalId={"schedule-add"} valveOptions={valveList}/>
+              <table className="striped responsive-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Start</th>
+                    <th>Duration</th>
+                    <th>Days</th>
+                    <th>Zone</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(schedules).map((key, i) => (
+                    <tr key={key}>
+                      <td>{schedules[key].name}</td>
+                      <td>{schedules[key].start}</td>
+                      <td>{schedules[key].duration}</td>
+                      <td>{(schedules[key].days.join(", "))}</td>
+                      <td>{schedules[key].valve}</td>
+                      <td><ScheduleModal key={schedules[key].name} onScheduleChange={(e) => this.doUpdateSchedule(e, 'update')} buttonTitle={"Edit"}  buttonIcon={""} modalId={`schedule-edit-${key}`} valveOptions={valveList} name={schedules[key].name}/></td>
+                      <td><Button className="left red" id={(schedules[key].name)} onClick={(e) => this.doUpdateSchedule(e, 'remove')}>Delete</Button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           }
 
-          { (schedules !== null)  &&
-            <table className="striped responsive-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Start</th>
-                  <th>Duration</th>
-                  <th>Days</th>
-                  <th>Zone</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.keys(schedules).map((key, i) => (
-                  <tr key={schedules[key].created}>
-                    <td>{schedules[key].name}</td>
-                    <td>{schedules[key].start}</td>
-                    <td>{schedules[key].duration}</td>
-                    <td>{schedules[key].days}</td>
-                    <td>{schedules[key].valve}</td>
-                    <td><ScheduleModal key={schedules[key].name} onScheduleChange={this.handleSchedule} buttonTitle={"Edit"}  buttonIcon={""} modalId={"schedule-edit"} valveOptions={valveList} name={schedules[key].name}/></td>
-                    <td><Button className="left red" id={(schedules[key].name)} onClick={this.deleteSchedule}>Delete</Button></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          }
-
-          { !isEmptySchedules &&
-            <table className="striped responsive-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Start</th>
-                  <th>Duration</th>
-                  <th>Days</th>
-                  <th>Zone</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {Object.keys(schedules).map((key, i) => (
-                  <tr key={schedules[key].name}>
-                    <td>{schedules[key].name}</td>
-                    <td>{schedules[key].start}</td>
-                    <td>{schedules[key].duration}</td>
-                    <td>{schedules[key].days}</td>
-                    <td>{schedules[key].valve}</td>
-                    <td><ScheduleModal key={schedules[key].name} onScheduleChange={this.handleSchedule} buttonTitle={"Edit"}  buttonIcon={""} modalId={`schedule-${schedules[key].name}`} valveOptions={valveList} name={schedules[key].name}/></td>
-                    <td><Button className="left red" id={(schedules[key].name)} onClick={this.deleteSchedule}>Delete</Button></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          { schedules === null  &&
+            <div>
+              <ScheduleModal key={Math.random()} onScheduleChange={this.handleSchedule} buttonTitle={"Add"} modalId={"schedule-add"} valveOptions={valveList}/>
+            </div>
           }
 
         </Col>

@@ -68,68 +68,63 @@ export default class scheduleModal extends Component {
     this.props.onScheduleChange(scheduleItem);
   }
 
-  // handleInputChange = (event) => {
-  //   this.setState({value: event.target.value});
-  // }
-
-
   render() {
     const { modalOptions, timePickerOptions } = this.state;
-    //const { buttonTitle, buttonIcon, modalId, valveOptions } = this.props;
     const { buttonTitle, buttonIcon, modalId, valveOptions } = this.props;
-
-
-    console.log(`name: ${this.props.name}`);
     const trigger = `trigger-${modalId}`
+
     return(
-      <Modal
-        header={`${buttonTitle} Schedule`}
-        id={modalId}
-        options={modalOptions}
-        trigger={<Button id={trigger} node="button" waves="light">{buttonTitle}<Icon right>playlist_add</Icon></Button>}
-        //trigger={<Button node="button" waves="light">{buttonTitle}<Icon right>{buttonIcon}</Icon></Button>}
-        actions={[
-          <Button modal="close" node="button" className="left red">Cancel</Button>,
-          <Button type="submit" form="schedule" node="button" className="modal-action green">{buttonTitle}</Button>
-        ]}
-      >
-        <Row>
-          <Col s={12}>
-            <form id="schedule" onSubmit={this.handleModalSave}>
-              <p className="range-field">Duration (minutes)</p>
-              <Range id="schedule-duration" itemname="duration" min="1" max="120" name="schedule-duration" />
+      <div>
+        <Modal
+          header={`${buttonTitle} Schedule`}
+          id={modalId}
+          key={`key-${modalId}`}
+          options={modalOptions}
+          trigger={<Button id={trigger} node="button" waves="light">{buttonTitle}<Icon right>playlist_add</Icon></Button>}
+          //trigger={<Button node="button" waves="light">{buttonTitle}<Icon right>{buttonIcon}</Icon></Button>}
+          actions={[
+            <Button modal="close" node="button" className="left red">Cancel</Button>,
+            <Button type="submit" form="schedule" node="button" className="modal-action green">{buttonTitle}</Button>
+          ]}
+        >
+          <Row>
+            <Col s={12}>
+              <form id="schedule" onSubmit={this.handleModalSave}>
+                <p className="range-field">Duration (minutes)</p>
+                <Range id="schedule-duration" itemname="duration" min="1" max="120" name="schedule-duration" />
 
-              <TextInput id="schedule-name" itemname="name" label="Schedule Name" required={true} validate={true} />
+                <TextInput id="schedule-name" itemname="name" label="Schedule Name" required={true} validate={true} />
 
-              <TimePicker
-                id="schedule-start"
-                itemname="start"
-                label="When"
-                options={timePickerOptions}
-                required={true}
-                validate={true}
-              />
+                <TimePicker
+                  id="schedule-start"
+                  itemname="start"
+                  label="When"
+                  options={timePickerOptions}
+                  required={true}
+                  validate={true}
+                />
 
-              <Select id="schedule-days" itemname="days" label="Days" multiple value={['2','4']} required={true} validate={true}>
-                <option value='1'>Sunday</option>
-                <option value='2'>Monday</option>
-                <option value='3'>Tuesday</option>
-                <option value='4'>Wednesday</option>
-                <option value='5'>Thursday</option>
-                <option value='6'>Friday</option>
-                <option value='7'>Saturday</option>
-              </Select>
+                <Select id="schedule-days" itemname="days" label="Days" multiple value={['2','4']} required={true} validate={true}>
+                  <option value='1'>Sunday</option>
+                  <option value='2'>Monday</option>
+                  <option value='3'>Tuesday</option>
+                  <option value='4'>Wednesday</option>
+                  <option value='5'>Thursday</option>
+                  <option value='6'>Friday</option>
+                  <option value='7'>Saturday</option>
+                </Select>
 
-              <Select id="schedule-valve" itemname="valve" label="Valve" required={true} validate={true}>
-                {Object.keys(valveOptions).map((key, i) => (
-                  <option key={key} value={key}>{valveOptions[key].position}</option>
-                ))}
-              </Select>
+                <Select id="schedule-valve" itemname="valve" label="Valve" required={true} validate={true}>
+                  {Object.keys(valveOptions).map((key, i) => (
+                    <option key={key} value={key}>{valveOptions[key].position}</option>
+                  ))}
+                </Select>
 
-            </form>
-          </Col>
-        </Row>
-      </Modal>
+              </form>
+            </Col>
+          </Row>
+        </Modal>
+      </div>
     );
   }
 

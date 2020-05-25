@@ -1,10 +1,22 @@
 {
-  "test-schedule": {
-    "created": 123456789,
-    "name": "test schedule",
-    "start": 900,
-    "duration": 30,
-    "days": [2, 4],
-    "valve": 1
+  "Dan is cool": {
+    "duration": "19",
+    "name": "Dan is cool",
+    "start": "12:00 PM",
+    "days": [
+      "2",
+      "4"
+    ],
+    "valve": "VALVE_ONE"
+  },
+  "dan the man": {
+    "duration": "50",
+    "name": "dan the man",
+    "start": "08:53 PM",
+    "days": [
+      "2",
+      "4"
+    ],
+    "valve": "VALVE_ONE"
   }
 }

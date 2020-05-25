@@ -8,6 +8,13 @@ export async function getSchedules() {
     .use(nocache)
     .then(res => {
       if (res.statusCode === 200) {
+
+        if (devServerEnabled) {
+          console.group('Getting Schedule:');
+          console.log('data set: ' + JSON.stringify(res.body));
+          console.groupEnd();
+        }
+
         return {
           success: true,
           message: res.body,
@@ -40,10 +47,7 @@ export function updateSchedule(data) {
     .set('accept', 'json')
     .end((err, res) => {
       if (res.statusCode === 200) {
-        return {
-          success: true,
-          message: 'schedule updated',
-        }
+        return getSchedules();
       } else {
         return {
           success: false,
@@ -65,10 +69,7 @@ export function removeSchedule(data) {
     .set('accept', 'json')
     .end((err, res) => {
       if (res.statusCode === 200) {
-        return {
-          success: true,
-          message: 'schedule removed',
-        }
+        return getSchedules();
       } else {
         return {
           success: false,
