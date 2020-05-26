@@ -145,6 +145,12 @@ export default class Button extends Component {
     return (
       <React.Fragment>
       <h3>HOME</h3>
+      <p>TODO items</p>
+      <ul>
+        <li>Weather</li>
+        <li>Turn on single valve</li>
+        <li>rain fall in area</li>
+      </ul>
       {/*  <div className='button'>
           <button onClick={this.handleClick}>Click Me</button>
           <br />

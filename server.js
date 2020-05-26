@@ -221,7 +221,7 @@ async function writeToSchedule(body, jsonFile, type) {
     }
 
     if (type === 'add') {
-      const path = body.data.name;
+      const path = body.data.name.replace(/\s+/g, '-').toLowerCase();
       const value = body.data;
       objectPath.set(jsonConfig, path, value);
     }

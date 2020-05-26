@@ -1,22 +1,56 @@
 {
-  "Dan is cool": {
-    "duration": "19",
-    "name": "Dan is cool",
-    "start": "12:00 PM",
+  "Lawn North": {
+    "duration": "50",
+    "name": "Lawn North",
+    "start": "05:30 AM",
+    "days": [
+      "2",
+      "4",
+      "6"
+    ],
+    "valve": "VALVE_ONE"
+  },
+  "Lawn South": {
+    "duration": "50",
+    "name": "Lawn South",
+    "start": "06:00 AM",
+    "days": [
+      "2",
+      "4",
+      "6"
+    ],
+    "valve": "VALVE_TWO"
+  },
+  "Garden Beds": {
+    "duration": "30",
+    "name": "Garden Beds",
+    "start": "06:30 AM",
+    "days": [
+      "2",
+      "4",
+      "6"
+    ],
+    "valve": "VALVE_THREE"
+  },
+  "dan-is-cool-": {
+    "duration": "50",
+    "name": "dan is cool ",
+    "start": "08:17 AM",
     "days": [
       "2",
       "4"
     ],
     "valve": "VALVE_ONE"
   },
-  "dan the man": {
-    "duration": "50",
-    "name": "dan the man",
-    "start": "08:53 PM",
+  "pm-test": {
+    "duration": "100",
+    "name": "PM test",
+    "start": "10:33 PM",
     "days": [
+      "1",
       "2",
-      "4"
+      "3"
     ],
-    "valve": "VALVE_ONE"
+    "valve": "VALVE_TWO"
   }
 }

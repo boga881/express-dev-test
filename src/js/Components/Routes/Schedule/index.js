@@ -90,9 +90,7 @@ export default class ScheduleComponent extends Component {
           {valveListEmpty &&
             <Card
               actions={[
-                //<Link to="/settings"><i className="material-icons left">settings</i>Settings</Link>
                 <Link key="settings" to="/settings"><i className="material-icons left">settings</i>Settings</Link>
-
               ]}
               className="blue-grey darken-1"
               closeIcon={<Icon>close</Icon>}
@@ -101,12 +99,11 @@ export default class ScheduleComponent extends Component {
               title="Ooops"
             >You need to configure your valve setup first before adding a schedule in settings.
             </Card>
-
           }
 
           { schedules !== null  &&
             <div>
-              <ScheduleModal key={Math.random()} onScheduleChange={(e) => this.doUpdateSchedule(e, 'update')} buttonTitle={"Add"} modalId={"schedule-add"} valveOptions={valveList}/>
+              <ScheduleModal key={Math.random()} onScheduleChange={(e) => this.doUpdateSchedule(e, 'update')} buttonTitle={"Add"} buttonIcon={"playlist_add"} modalId={"schedule-add"} valveOptions={valveList}/>
               <table className="striped responsive-table">
                 <thead>
                   <tr>
@@ -127,7 +124,7 @@ export default class ScheduleComponent extends Component {
                       <td>{schedules[key].duration}</td>
                       <td>{(schedules[key].days.join(", "))}</td>
                       <td>{schedules[key].valve}</td>
-                      <td><ScheduleModal key={schedules[key].name} onScheduleChange={(e) => this.doUpdateSchedule(e, 'update')} buttonTitle={"Edit"}  buttonIcon={""} modalId={`schedule-edit-${key}`} valveOptions={valveList} name={schedules[key].name}/></td>
+                      <td><ScheduleModal key={schedules[key].name} onScheduleChange={(e) => this.doUpdateSchedule(e, 'update')} buttonTitle={"Edit"}  buttonIcon={""} modalId={`schedule-edit-${key}`} valveOptions={valveList} vals={(schedules[key])} /></td>
                       <td><Button className="left red" id={(schedules[key].name)} onClick={(e) => this.doUpdateSchedule(e, 'remove')}>Delete</Button></td>
                     </tr>
                   ))}
@@ -138,7 +135,7 @@ export default class ScheduleComponent extends Component {
 
           { schedules === null  &&
             <div>
-              <ScheduleModal key={Math.random()} onScheduleChange={this.handleSchedule} buttonTitle={"Add"} modalId={"schedule-add"} valveOptions={valveList}/>
+              <ScheduleModal key={Math.random()} onScheduleChange={this.handleSchedule} buttonTitle={"Add"} buttonIcon={"playlist_add"} modalId={"schedule-add"} valveOptions={valveList}/>
             </div>
           }
 
