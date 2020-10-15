@@ -20,8 +20,7 @@ export default class SettingsComponent extends Component {
     };
 
     this.selectChange = this.selectChange.bind(this);
-    //this.getUserConfigSettings = this.getUserConfigSettings.bind(this);
-    //this.updateUserConfigSettings = this.updateUserConfigSettings.bind(this);
+
   }
 
   getUserConfigSettings = async () => {
@@ -34,12 +33,14 @@ export default class SettingsComponent extends Component {
         isLoading: false,
       });
     }
+
   }
 
   updateUserConfigSettings = async (newField, newValue) => {
-    const update = await updateSettings(newField, newValue)
-    const get = await this.getUserConfigSettings()
+    const update = await updateSettings(newField, newValue);
+    const get = await this.getUserConfigSettings();
   }
+
 
   componentDidMount() {
     const promise = this.getUserConfigSettings();
@@ -49,12 +50,6 @@ export default class SettingsComponent extends Component {
     {/* eslint no-undef:0 */}
     M.updateTextFields();
   }
-
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.initialized && !nextProps.updating) {
-  //     this.setStateFromProps(nextProps);
-  //   }
-  // }
 
   setStateFromProps(props) {
     this.setState({
@@ -113,17 +108,18 @@ export default class SettingsComponent extends Component {
   }
 
   selectChange(event){
-    const newField = 'valves.defaultShutoffDuration';
+    const field = 'valves.defaultShutoffDuration';
     const newValue = event.target.value;
-    let promise = this.updateUserConfigSettings(newField, newValue);
+    this.updateUserConfigSettings(field, newValue);
   }
 
   handleSwitchChange = async (id) => {
     const { userConfig } = this.state;
-    const newField = `valves.${id}.enabled`;
-    const configVal = eval(`userConfig.valves.${id}.enabled`);
+    const newField = `valves.list.${id}.enabled`;
+    const configVal = eval(`userConfig.valves.list.${id}.enabled`);
     const newValue = !configVal;
     await this.updateUserConfigSettings(newField, newValue);
+    console.log("Done: HandleSwitchChange");
   }
 
   render() {
@@ -146,7 +142,7 @@ export default class SettingsComponent extends Component {
 
     const pushover = userConfig ? userConfig.notifications.pushover : false;
     const pushoverEnabled = userConfig.notifications.pushover.enabled;
-    const valves = userConfig.valves;
+    const valves = userConfig.valves.list;
 
     const switches = Object.keys(valves).map(key =>
       <div key={key}>

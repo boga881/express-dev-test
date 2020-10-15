@@ -39,15 +39,24 @@ export default class ScheduleComponent extends Component {
   }
 
   getSchedulesFromConfig = async () => {
-    const result = await getSchedules();
-
-    if (typeof result !== 'undefined' && result.success) {
-      console.log(JSON.stringify(result.message));
+    try {
+      const result = await getSchedules();
+      console.log("Success:" + JSON.stringify(result));
+      if (typeof result !== 'undefined' && result.success) {
+        console.log(JSON.stringify(result.message));
+        this.setState({
+          schedules: result.message.schedule,
+          isLoading: false,
+        });
+      }
+    }
+    catch (error) {
+      console.log("There was an error:" + error);
       this.setState({
-        schedules: result.message.schedule,
-        isLoading: false,
+        isLoading: true,
       });
     }
+
   }
 
   updateScheduleToConfig = async (data, type) => {

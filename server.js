@@ -213,7 +213,7 @@ function jsonReader(jsonFile, cb) {
   })
 }
 
-async function writeToSchedule(body, jsonFile, type) {
+function writeToSchedule(body, jsonFile, type) {
   jsonReader(jsonFile, (err, jsonConfig) => {
     if (err) {
       console.log(err)
@@ -255,7 +255,8 @@ async function writeToSchedule(body, jsonFile, type) {
   })
 }
 
-async function writeToConfig(body, jsonFile) {
+function writeToConfig(body, jsonFile) {
+  console.log(`Body: ${JSON.stringify(body)}`)
   jsonReader(jsonFile, (err, jsonConfig) => {
     if (err) {
       console.log(err)
@@ -278,6 +279,7 @@ async function writeToConfig(body, jsonFile) {
 
       if (devServerEnabled) {
         console.log('New settings updated to config => ' + jsonFile);
+        console.log(`${path} => ${value}`);
       }
 
     })

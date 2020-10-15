@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-r
 import Schedule from 'components/Routes/Schedule';
 import Settings from 'components/Routes/Settings';
 import History from 'components/Routes/History';
-import Button from 'components/Button';
+import Main from 'components/Routes/Main';
 import NavBar from 'components/NavBar';
 
 import M from "materialize-css";
@@ -19,7 +19,7 @@ function App() {
           <NavBar />
 
           <Switch>
-            <Route exact path='/' component={Button} />
+            <Route exact path='/' component={Main} />
             <Route path='/settings' component={Settings} />
             <Route path='/schedule' component={Schedule} />
             <Route path='/history' component={History} />

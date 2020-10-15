@@ -52,5 +52,63 @@
       "3"
     ],
     "valve": "VALVE_TWO"
+  },
+  "test": {
+    "duration": "25",
+    "name": "test",
+    "start": "12:45 PM",
+    "days": [
+      "3",
+      "6"
+    ],
+    "valve": "VALVE_FOUR"
+  },
+  "test2": {
+    "duration": "61",
+    "name": "test2",
+    "start": "08:59 PM",
+    "days": [
+      "7"
+    ],
+    "valve": "VALVE_ONE"
+  },
+  "asd": {
+    "duration": "61",
+    "name": "asd",
+    "start": "04:06 PM",
+    "days": [
+      "7"
+    ],
+    "valve": "VALVE_ONE"
+  },
+  "qwe": {
+    "duration": "61",
+    "name": "qwe",
+    "start": "04:20 PM",
+    "days": [
+      "7"
+    ],
+    "valve": "VALVE_ONE"
+  },
+  "fuk-u": {
+    "duration": "61",
+    "name": "fuk u",
+    "start": "08:21 PM",
+    "days": [
+      "2",
+      "3",
+      "5",
+      "7"
+    ],
+    "valve": "VALVE_TWO"
+  },
+  "try-again": {
+    "duration": "61",
+    "name": "try again",
+    "start": "05:22 AM",
+    "days": [
+      "7"
+    ],
+    "valve": "VALVE_TWO"
   }
 }

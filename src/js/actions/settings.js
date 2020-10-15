@@ -3,7 +3,9 @@ import request from "superagent";
 import nocache from 'superagent-no-cache';
 const devServerEnabled = process.env.NODE_ENV !== 'production';
 
-export async function getSettings() {
+
+export function getSettings() {
+// export async function getSettings() {
   return request.get('/api/settings')
     .use(nocache)
     .then(res => {
@@ -28,16 +30,16 @@ export async function getSettings() {
     });
 }
 
-export function updateSettings(path, value) {
+export function updateSettings(name, value) {
   if (devServerEnabled) {
     console.group('Updating Settings:');
-    console.log('path: ' + path);
+    console.log('name: ' + name);
     console.log('value: ' + value);
     console.groupEnd();
   }
 
   const res = request.post('/api/settings')
-    .send({'path': path, 'value': value})
+    .send({'name': name, 'value': value})
     .set('accept', 'json')
     .end((err, res) => {
       if (res.statusCode === 200) {
