@@ -10,8 +10,9 @@ import config from './webpack.config.js';
 
 const historyFile = './config/history.json';
 const history = require(historyFile);
+
 const userConfigFile = './config/user.config.json';
-const settings = require(userConfigFile);
+
 const scheduleFile = './config/schedules.json';
 const schedule = require(scheduleFile);
 
@@ -24,7 +25,7 @@ const devServerEnabled = process.env.NODE_ENV !== 'production';
 if (devServerEnabled) {
   //reload=true:Enable auto reloading when changing JS files or content
   //timeout=1000:Time from disconnecting from server to reconnecting
-  config.entry.app.unshift('webpack-hot-middleware/client?reload=true&timeout=1000');
+  //config.entry.app.unshift('webpack-hot-middleware/client?reload=true&timeout=1000');
 
   //Add HMR plugin
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -35,6 +36,12 @@ if (devServerEnabled) {
   app.use(webpackDevMiddleware(compiler, {
     publicPath: config.output.publicPath
   }));
+
+
+  var hotMiddleware = require('webpack-hot-middleware')(compiler, {
+    log: () => {},
+    heartbeat: 2000
+});
 
   //Enable "webpack-hot-middleware"
   app.use(webpackHotMiddleware(compiler));
@@ -76,7 +83,7 @@ app.post('/api/history', (req, res) => {
     });
   }
 
-  writeToConfig(req.body, historyFile)
+  const write = writeToConfig(req.body, historyFile)
     .then((result) => {
       res.status(200).send({
         success: true
@@ -116,17 +123,18 @@ app.post('/api/settings', (req, res) => {
     });
   }
 
-  writeToConfig(req.body, userConfigFile)
-    .then((result) => {
-      res.status(200).send({
-        success: true
-      })
-    })
-    .catch((error) => {
-      res.status(500).send({
-        success: false
-      });
+  const result = writeToConfig(req.body, historyFile);
+
+  if (result) {
+    return res.status(200).send({
+       success: true
+     })
+  }
+  else {
+    return res.status(500).send({
+      success: false
     });
+  }
 
 });
 
@@ -213,6 +221,55 @@ function jsonReader(jsonFile, cb) {
   })
 }
 
+function writeToConfig(body, jsonFile) {
+
+  const configFile = body.file;
+  const settingsFile = require(configFile);
+
+  if (devServerEnabled) {
+    console.log(`Body: ${JSON.stringify(body)}`)
+  }
+
+  jsonReader(configFile, (err, jsonConfig) => {
+    if (err) {
+      console.log(err)
+      return false;
+    }
+
+    const path = body.name;
+    let value = body.value;
+
+    // Convert strings to bool if true/false values.
+    if (value == "true" ){
+      value = true;
+    }
+
+    if (value == "false" ){
+      value = false;
+    }
+
+    objectPath.set(jsonConfig, path, value);
+
+    if (devServerEnabled) {
+      console.log('Writing new settings to => ' + configFile);
+    }
+
+    fs.writeFile(configFile, JSON.stringify(jsonConfig, null, 2), (err) => {
+      if (err) {
+        console.log('Error writing file:', err)
+        return false;
+      }
+
+      if (devServerEnabled) {
+        console.log('New settings updated to config => ' + configFile);
+        console.log(`${path} => ${value}`);
+      }
+
+    })
+  })
+  return true;
+}
+
 function writeToSchedule(body, jsonFile, type) {
   jsonReader(jsonFile, (err, jsonConfig) => {
     if (err) {
@@ -230,12 +287,6 @@ function writeToSchedule(body, jsonFile, type) {
       objectPath.del(jsonConfig, body.data);
     }
 
-    // if (objectPath.has(jsonConfig, path)) {
-    //   objectPath.set(jsonConfig, path, value);
-    // }
-
-
-
     if (devServerEnabled) {
       console.log('Writing new schedule to => ' + jsonFile);
     }
@@ -248,38 +299,6 @@ function writeToSchedule(body, jsonFile, type) {
 
       if (devServerEnabled) {
         console.log('New settings updated to config => ' + jsonFile);
-      }
-
-    })
-    return true;
-  })
-}
-
-function writeToConfig(body, jsonFile) {
-  console.log(`Body: ${JSON.stringify(body)}`)
-  jsonReader(jsonFile, (err, jsonConfig) => {
-    if (err) {
-      console.log(err)
-      return false;
-    }
-
-    const path = body.name;
-    const value = body.value;
-    objectPath.set(jsonConfig, path, value);
-
-    if (devServerEnabled) {
-      console.log('Writing new settings to => ' + jsonFile);
-    }
-
-    fs.writeFile(jsonFile, JSON.stringify(jsonConfig, null, 2), (err) => {
-      if (err) {
-        console.log('Error writing file:', err)
-        return false;
-      }
-
-      if (devServerEnabled) {
-        console.log('New settings updated to config => ' + jsonFile);
-        console.log(`${path} => ${value}`);
       }
 
     })

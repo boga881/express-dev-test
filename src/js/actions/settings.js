@@ -1,11 +1,11 @@
 import actions from 'actions/action-types';
 import request from "superagent";
 import nocache from 'superagent-no-cache';
+const userConfigFile = './config/user.config.json';
 const devServerEnabled = process.env.NODE_ENV !== 'production';
 
 
 export function getSettings() {
-// export async function getSettings() {
   return request.get('/api/settings')
     .use(nocache)
     .then(res => {
@@ -39,7 +39,7 @@ export function updateSettings(name, value) {
   }
 
   const res = request.post('/api/settings')
-    .send({'name': name, 'value': value})
+    .send({'name': name, 'value': value, 'file': userConfigFile})
     .set('accept', 'json')
     .end((err, res) => {
       if (res.statusCode === 200) {

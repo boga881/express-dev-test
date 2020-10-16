@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Col, Row, Switch, TextInput } from 'react-materialize';
-import { getSettings } from 'actions/settings.js'
+import { getSettings, updateSettings } from 'actions/settings.js'
 import Loading from 'components/Loading';
+import ToHumanDate from 'utils/convertTimestamp.js'
 
 export default class Main extends Component  {
 
@@ -31,9 +32,34 @@ export default class Main extends Component  {
       }
     }
 
+    updateUserConfigSettings = async (newField, newValue) => {
+      const update = await updateSettings(newField, newValue);
+      const get = await this.getUserConfigSettings();
+    }
+
+    toggleValveAction = async (event) => {
+      const field = event.target.name;
+      const newValue = event.target.value;
+
+
+      this.updateUserConfigSettings(field, newValue);
+      //
+      // // If opeining valve, replace field and update config again.
+      // if (newValue) {
+      //   const update = await updateSettings(field, newValue);
+      //   const fieldTimestamp = field.replace("isOpen", "timeStated");
+      //   this.updateUserConfigSettings(fieldTimestamp, Date.now());
+      //   console.log("time" + Date.now());
+      // }
+      // else {
+      //   this.updateUserConfigSettings(field, newValue);
+      // }
+
+    }
+
     render() {
       const { userConfig, isLoading, dropdownOptions } = this.state;
-      console.log(userConfig);
+
       if (userConfig === null) {
         return (
           <React.Fragment>
@@ -57,23 +83,27 @@ export default class Main extends Component  {
               <td>-</td>
               <td>{valves[key].position}</td>
               <td>
-                <Button className="green" onClick={this.handleValveStart} waves="light">START</Button>
+                <Button
+                  className="green"
+                  name={`valves.list.${key}.status.isOpen`}
+                  value={!valves[key].status.isOpen}
+                  onClick={this.toggleValveAction}
+                  waves="light">START</Button>
               </td>
             </tr>
         } else if (valves[key].enabled && valves[key].status.isOpen) {
           return <tr key={key}>
               <td>ON</td>
-              <td>{valves[key].status.timeStated}</td>
+              <td><ToHumanDate timestamp={valves[key].status.timeStated} format='HH:mm:ss' /></td>
               <td>-</td>
               <td>{valves[key].position}</td>
               <td>
               <Button
                 className="red"
-                onClick={this.handleValveStop}
-                waves="light"
-              >
-              STOP
-              </Button>
+                name={`valves.list.${key}.status.isOpen`}
+                value={!valves[key].status.isOpen}
+                onClick={this.toggleValveAction}
+                waves="light">STOP</Button>
               </td>
             </tr>
         }
@@ -82,15 +112,14 @@ export default class Main extends Component  {
       return (
         <Row>
           <Col s={12}>
-            <h3>Home</h3>
             <h5>Quick Run</h5>
-            <p>Turn on your configured solonids to run for the current default duration of {duration} minutes.</p>
+            <p>Turn on your configured solonids to run for the current default duration of <b>{duration} minutes</b>.</p>
               <table className="striped responsive-table">
                 <thead>
                   <tr>
                     <th>Status</th>
-                    <th>Start</th>
-                    <th>End</th>
+                    <th>Started</th>
+                    <th>Ending </th>
                     <th>Zone</th>
                     <th>Action</th>
                   </tr>
