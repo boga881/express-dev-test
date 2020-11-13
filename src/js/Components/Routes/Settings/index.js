@@ -111,7 +111,7 @@ export default class SettingsComponent extends Component {
 
   selectChange(event){
     const field = event.target.name;
-    const newValue = event.target.value;
+    const newValue = parseInt(event.target.value);
     this.updateUserConfigSettings(field, newValue);
   }
 
@@ -232,14 +232,14 @@ export default class SettingsComponent extends Component {
                     value={userConfig.valves.defaultShutoffDuration}
                     name="valves.defaultShutoffDuration"
                   >
-                    <option value='0'>Disabled</option>
-                    <option value='1'>1 Minute</option>
-                    <option value='2'>2 Minutes</option>
-                    <option value='5'>5 Minutes</option>
-                    <option value='10'>10 Minutes</option>
-                    <option value='15'>15 Minutes</option>
-                    <option value='30'>30 Minutes</option>
-                    <option value='60'>60 Minutes</option>
+                    <option value={0}>Disabled</option>
+                    <option value={6000}>1 Minute</option>
+                    <option value={120000}>2 Minutes</option>
+                    <option value={300000}>5 Minutes</option>
+                    <option value={600000}>10 Minutes</option>
+                    <option value={900000}>15 Minutes</option>
+                    <option value={1800000}>30 Minutes</option>
+                    <option value={3600000}>60 Minutes</option>
                   </Select>
                 </Col>
               </Row>

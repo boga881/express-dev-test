@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Button, Col, Row, Switch, TextInput } from 'react-materialize';
 import { getSettings, updateSettings } from 'actions/settings.js'
 import Loading from 'components/Loading';
-import ToHumanDate from 'utils/convertTimestamp.js'
+import ToHumanDate from 'utils/convertTimestamp.js';
+import Countdown from "react-countdown";
 
 export default class Main extends Component  {
 
@@ -33,8 +34,13 @@ export default class Main extends Component  {
     }
 
     updateUserConfigSettings = async (newField, newValue) => {
-      const update = await updateSettings(newField, newValue);
-      const get = await this.getUserConfigSettings();
+      //const update = await updateSettings(newField, newValue);
+      //const get = await this.getUserConfigSettings();
+      return fetch(updateSettings(newField, newValue))
+        .then(response => {
+          this.getUserConfigSettings();
+        })
+        .catch( error => console.log(error));
     }
 
     toggleValveAction = async (event) => {
@@ -95,7 +101,7 @@ export default class Main extends Component  {
           return <tr key={key}>
               <td>ON</td>
               <td><ToHumanDate timestamp={valves[key].status.timeStated} format='HH:mm:ss' /></td>
-              <td>-</td>
+              <td><Countdown date={Date.now() + userConfig.defaultShutoffDuration} daysInHours={true}/></td>
               <td>{valves[key].position}</td>
               <td>
               <Button
