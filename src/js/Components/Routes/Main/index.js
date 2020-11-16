@@ -33,10 +33,8 @@ export default class Main extends Component  {
       }
     }
 
-    updateUserConfigSettings = async (newField, newValue) => {
-      //const update = await updateSettings(newField, newValue);
-      //const get = await this.getUserConfigSettings();
-      return fetch(updateSettings(newField, newValue))
+    updateUserConfigSettings = async (newField, newValue, id) => {
+      return fetch(updateSettings(newField, newValue ,id))
         .then(response => {
           this.getUserConfigSettings();
         })
@@ -44,23 +42,7 @@ export default class Main extends Component  {
     }
 
     toggleValveAction = async (event) => {
-      const field = event.target.name;
-      const newValue = event.target.value;
-
-
-      this.updateUserConfigSettings(field, newValue);
-      //
-      // // If opeining valve, replace field and update config again.
-      // if (newValue) {
-      //   const update = await updateSettings(field, newValue);
-      //   const fieldTimestamp = field.replace("isOpen", "timeStated");
-      //   this.updateUserConfigSettings(fieldTimestamp, Date.now());
-      //   console.log("time" + Date.now());
-      // }
-      // else {
-      //   this.updateUserConfigSettings(field, newValue);
-      // }
-
+      this.updateUserConfigSettings(event.target.name, event.target.value, event.target.id);
     }
 
     render() {
@@ -74,7 +56,7 @@ export default class Main extends Component  {
         );
       }
 
-      const duration = userConfig.valves.defaultShutoffDuration;
+      const defaultDuration = userConfig.valves.defaultShutoffDuration;
       const pushover = userConfig ? userConfig.notifications.pushover : false;
       const pushoverEnabled = userConfig.notifications.pushover.enabled;
       const valves = userConfig.valves.list;
@@ -90,6 +72,7 @@ export default class Main extends Component  {
               <td>{valves[key].position}</td>
               <td>
                 <Button
+                  id={key}
                   className="green"
                   name={`valves.list.${key}.status.isOpen`}
                   value={!valves[key].status.isOpen}
@@ -98,13 +81,15 @@ export default class Main extends Component  {
               </td>
             </tr>
         } else if (valves[key].enabled && valves[key].status.isOpen) {
+          let timeStarted = valves[key].status.timeStated;
           return <tr key={key}>
               <td>ON</td>
-              <td><ToHumanDate timestamp={valves[key].status.timeStated} format='HH:mm:ss' /></td>
-              <td><Countdown date={Date.now() + userConfig.defaultShutoffDuration} daysInHours={true}/></td>
+              <td><ToHumanDate timestamp={timeStarted} format={'HH:mm:ss'} /></td>
+              <td><Countdown date={timeStarted + defaultDuration} daysInHours={true} /></td>
               <td>{valves[key].position}</td>
               <td>
               <Button
+                id={key}
                 className="red"
                 name={`valves.list.${key}.status.isOpen`}
                 value={!valves[key].status.isOpen}
@@ -119,7 +104,7 @@ export default class Main extends Component  {
         <Row>
           <Col s={12}>
             <h5>Quick Run</h5>
-            <p>Turn on your configured solonids to run for the current default duration of <b>{duration} minutes</b>.</p>
+            <p>Turn on your configured solonids to run for the current default duration of <b><ToHumanDate timestamp={defaultDuration} format={'mm'} /> minutes</b>.</p>
               <table className="striped responsive-table">
                 <thead>
                   <tr>

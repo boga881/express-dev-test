@@ -6,6 +6,7 @@ const devServerEnabled = process.env.NODE_ENV !== 'production';
 
 
 export function getSettings() {
+  console.log("start get");
   return request.get('/api/settings')
     .use(nocache)
     .then(res => {
@@ -30,16 +31,18 @@ export function getSettings() {
     });
 }
 
-export function updateSettings(name, value) {
+export function updateSettings(name, value, id) {
   if (devServerEnabled) {
     console.group('Updating Settings:');
     console.log('name: ' + name);
     console.log('value: ' + value);
+    console.log('id: ' + id);
     console.groupEnd();
   }
 
-  const res = request.post('/api/settings')
-    .send({'name': name, 'value': value, 'file': userConfigFile})
+  //const res = request.post('/api/settings')
+  const res = request.post('/api/v2/update')
+    .send({'name': name, 'value': value, 'id': id, 'file': userConfigFile})
     .set('accept', 'json')
     .end((err, res) => {
       if (res.statusCode === 200) {
@@ -54,4 +57,5 @@ export function updateSettings(name, value) {
         }
       }
     });
+    console.log("end update");
 }

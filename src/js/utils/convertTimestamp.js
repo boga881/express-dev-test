@@ -12,7 +12,9 @@ export default class convertTimestamp extends Component {
     const converted = moment(timestamp,'x').format(format);
 
     return(
-      <span>{converted}</span>
+      <React.Fragment>
+        {converted}
+      </React.Fragment>
     );
   }
 

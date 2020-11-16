@@ -58,6 +58,7 @@ app.listen(port, () => {
  * The API endpoints.
  */
 app.get('/api/history', (req, res) => {
+  console.log("Get history");
   jsonReader(historyFile, (err, jsonFile) => {
     if (err) {
       console.log('Error...: ' + JSON.stringify(err));
@@ -98,6 +99,7 @@ app.post('/api/history', (req, res) => {
 });
 
 app.get('/api/settings', (req, res) => {
+  console.log("Get settings");
   jsonReader(userConfigFile, (err, jsonConfig) => {
     if (err) {
       console.log('Error...: ' + JSON.stringify(err));
@@ -123,7 +125,7 @@ app.post('/api/settings', (req, res) => {
     });
   }
 
-  const result = writeToConfig(req.body, historyFile);
+  const result = writeToConfig(req.body, userConfigFile);
 
   if (result) {
     return res.status(200).send({
@@ -139,6 +141,7 @@ app.post('/api/settings', (req, res) => {
 });
 
 app.get('/api/schedule', (req, res) => {
+  console.log("Get schedule");
   jsonReader(scheduleFile, (err, jsonConfig) => {
     if (err) {
       console.log('Error...: ' + JSON.stringify(err));
@@ -203,6 +206,35 @@ app.post('/api/schedule/remove', (req, res) => {
 });
 
 /*
+* API v2 
+*/
+
+app.post('/api/v2/update', (req, res) => {
+  if (!req.body) {
+    console.log('Failed to update config');
+    return res.status(400).json({
+      success: false,
+      message: 'expected path and value in body request'
+    });
+  }
+
+  const result = writeToConfig(req.body, req.body.file);
+
+  if (result) {
+    return res.status(200).send({
+       success: true
+     })
+  }
+  else {
+    return res.status(500).send({
+      success: false
+    });
+  }
+
+});
+
+
+/*
  * Custom server methods.
  */
 function jsonReader(jsonFile, cb) {
@@ -237,6 +269,7 @@ function writeToConfig(body, jsonFile) {
     }
 
     const path = body.name;
+    const id = body.id;
     let value = body.value;
 
     // Convert strings to bool if true/false values.
@@ -248,6 +281,13 @@ function writeToConfig(body, jsonFile) {
       value = false;
     }
 
+    // Set the open time if vale is opening
+    if (path.includes("status.isOpen") && value) {
+      objectPath.set(jsonConfig, `valves.list.${id}.status.timeStated`, Date.now());
+    }
+
+    console.log(JSON.stringify(body))
+    
     objectPath.set(jsonConfig, path, value);
 
     if (devServerEnabled) {
