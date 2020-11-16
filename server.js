@@ -8,6 +8,10 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import config from './webpack.config.js';
 
+import CronJob from 'cron';
+import superagent from "superagent";
+import { platform } from 'os';
+
 const historyFile = './config/history.json';
 const history = require(historyFile);
 
@@ -281,9 +285,18 @@ function writeToConfig(body, jsonFile) {
       value = false;
     }
 
-    // Set the open time if vale is opening
-    if (path.includes("status.isOpen") && value) {
-      objectPath.set(jsonConfig, `valves.list.${id}.status.timeStated`, Date.now());
+    // Set the open time if vale is opening else null
+    if (path.includes("status.isOpen")) {
+      const timeStartedStamp = value ? Date.now() : null;
+      objectPath.set(jsonConfig, `valves.list.${id}.status.timeStated`, timeStartedStamp);
+
+      if (value) {
+        const time = generateRemainingTime(jsonConfig);
+        const title = `Zone starting - ${id}`
+        const message = `${time} minutes remaining for zone ${id}.`
+        sendNotification(title, message, jsonConfig);
+      }
+      
     }
 
     console.log(JSON.stringify(body))
@@ -346,6 +359,38 @@ function writeToSchedule(body, jsonFile, type) {
   })
 }
 
+function generateRemainingTime(jsonConfig) {
+  const defaultDuration = jsonConfig.valves.defaultShutoffDuration;
+  const minutes = Math.floor(defaultDuration / 60000);
+  const seconds = ((defaultDuration % 60000) / 1000).toFixed(0);
+  return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
+
+
+function sendNotification(title, message, config) {
+  const device = "ICUP";
+  let payload = {};
+  let endpoint = null;
+  if (config.notifications.pushover.enabled) {
+    endpoint = config.notifications.pushover.endpoint;
+    payload = {  
+      "device": device,
+      "token": config.notifications.pushover.token,
+      "user": config.notifications.pushover.userKey,
+      "title": title   ,
+      "message": message
+    }
+  }
+
+  if (endpoint) {
+    superagent.post(endpoint)
+    .send(payload)
+    .end((err, res) => {
+      // Calling the end function will send the request
+    });
+  }
+  
+}
 /*
 app.post('/api/relayon', multipart.any(), function(req, res) {
 
@@ -397,3 +442,13 @@ app.post('/api/relayoff', multipart.any(), function(req, res) {
 });
 
 */
+
+
+
+// console.log('Before job instantiation');
+// const job = new CronJob('0 */10 * * * *', function() {
+// 	const d = new Date();
+// 	console.log('Every Tenth Minute:', d);
+// });
+// console.log('After job instantiation');
+// job.start();
