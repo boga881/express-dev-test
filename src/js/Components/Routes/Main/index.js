@@ -21,6 +21,10 @@ export default class Main extends Component  {
       const promise = this.getUserConfigSettings();
     }
 
+    generatePageId() {
+      return Math.floor(Math.random() * 100);
+    }
+
     getUserConfigSettings = async () => {
       const result = await getSettings()
 
@@ -45,6 +49,17 @@ export default class Main extends Component  {
       this.updateUserConfigSettings(event.target.name, event.target.value, event.target.id);
     }
 
+    countdownRenderer = ({ hours, minutes, seconds, completed }) => {
+      if (completed) {
+        // Render a completed state
+        // @TODO: reload depricated, find better solution.
+        window.location.reload(false);
+      } else {
+        // Render a countdown
+        return <span>{hours}:{minutes}:{seconds}</span>;
+      }
+    };
+
     render() {
       const { userConfig, isLoading, dropdownOptions } = this.state;
 
@@ -67,6 +82,7 @@ export default class Main extends Component  {
         } else if (valves[key].enabled && !valves[key].status.isOpen) {
           return <tr key={key}>
               <td>OFF</td>
+              <td>{valves[key].name}</td>
               <td>-</td>
               <td>-</td>
               <td>{valves[key].position}</td>
@@ -84,9 +100,9 @@ export default class Main extends Component  {
           let timeStarted = valves[key].status.timeStated;
           return <tr key={key}>
               <td>ON</td>
+              <td>{valves[key].name}</td>
               <td><ToHumanDate timestamp={timeStarted} format={'HH:mm:ss'} /></td>
-              {/* <td><Countdown date={timeStarted + defaultDuration} daysInHours={true} onComplete={(e) => this.toggleCompletion(`valves[${key}].status.timeStated`)} /></td> */}
-              <td><Countdown date={timeStarted + defaultDuration} daysInHours={true} /></td>
+              <td><Countdown date={timeStarted + defaultDuration} daysInHours={true} renderer={this.countdownRenderer} zeroPadTime={3}/></td>
               <td>{valves[key].position}</td>
               <td>
               <Button
@@ -110,9 +126,10 @@ export default class Main extends Component  {
                 <thead>
                   <tr>
                     <th>Status</th>
+                    <th>Zone</th>
                     <th>Started</th>
                     <th>Ending </th>
-                    <th>Zone</th>
+                    <th>Valve</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -121,8 +138,14 @@ export default class Main extends Component  {
                 </tbody>
               </table>
 
-            <p>TODO items</p>
+            <h5>TODO items</h5>
             <ul>
+              <li>Stop cronjob if manually stopped valve</li>
+              <li>Log history on manuall trigger</li>
+            </ul> 
+            <h5>Future items</h5>
+            <ul> 
+              <li>Homekit integration</li>
               <li>Weather</li>
               <li>Turn on single valve</li>
               <li>rain fall in area</li>
