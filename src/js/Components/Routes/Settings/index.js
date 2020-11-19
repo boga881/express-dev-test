@@ -254,7 +254,7 @@ export default class SettingsComponent extends Component {
                     value={`${userConfig.valves.defaultShutoffDuration}`}
                     name="valves.defaultShutoffDuration"
                   >
-                    <option key={0} value={0}>Disabled</option>
+                    {/* <option key={0} value={0}>Disabled</option> */}
                     <option key={60000} value={60000}>1 Minute</option>
                     <option key={120000} value={120000}>2 Minutes</option>
                     <option key={300000} value={300000}>5 Minutes</option>

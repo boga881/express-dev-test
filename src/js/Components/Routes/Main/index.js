@@ -85,7 +85,8 @@ export default class Main extends Component  {
           return <tr key={key}>
               <td>ON</td>
               <td><ToHumanDate timestamp={timeStarted} format={'HH:mm:ss'} /></td>
-              <td><Countdown date={timeStarted + defaultDuration} daysInHours={true} onComplete={this.toggleValveAction} /></td>
+              {/* <td><Countdown date={timeStarted + defaultDuration} daysInHours={true} onComplete={(e) => this.toggleCompletion(`valves[${key}].status.timeStated`)} /></td> */}
+              <td><Countdown date={timeStarted + defaultDuration} daysInHours={true} /></td>
               <td>{valves[key].position}</td>
               <td>
               <Button

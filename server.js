@@ -303,6 +303,7 @@ function writeToConfig(body, jsonFile) {
           "name": `valves.list.${id}.status.isOpen`,
           "value": false,
           "id": `${id}`,
+          "file": userConfigFile,
         };
 
         createCronSchedule(id ,cronBody, jsonFile, jsonConfig)
@@ -407,29 +408,52 @@ function sendNotification(title, message, config) {
 
 function createCronSchedule(id, cronBody, jsonFile, jsonConfig) {
   const defaultTime = objectPath.get(jsonConfig, `valves.defaultShutoffDuration`);
-  let cronTimer;
-  
-  //https://superuser.com/questions/397444/how-to-generate-cron-expression-through-millisecond
-  // Hours
+  //let cronTimer;
+  let cronStep;
+  let date = new Date();
+  console.log('started time:   ', date);
+
+  //Hours
   if (defaultTime >= 3600000) {
-    cronTimer = `0 * ${int((defaultTime % 3600) / 60)} * * *`
+    cronStep = Math.floor(defaultTime / 60000) / 60
+    //cronTimer = `* */${cronStep} * * *`
+    date.setHours(date.getHours() + cronStep);
   }
   // Minutes
   else {
-    cronTimer = `0 ${int((defaultTime / 3600))} * * * *`
+    cronStep = Math.floor(defaultTime / 60000);
+    //cronTimer = `*/${cronStep} * * * *`
+    date.setMinutes(date.getMinutes() + cronStep);
   }
+
+  //console.log(`Cron configured: ${cronTimer}`);
 
   const zone = objectPath.get(jsonConfig, `valves.list.${id}`);
   const cronTitle = `Zone finished - ${zone.name}`
   const cronMessage = `Shedule completed for ${zone.name} zone.`
-       
-  const job = new CronJob(cronTimer, function() {
-    job.stop();
+     
+  
+  //let date = new Date();
+  //console.log('started time:   ', date);
+  //const defaultSeconds = defaultTime / 1000;
+  //date.setSeconds(defaultSeconds+2);
+  console.log('calculated time:', date);
+ //console.log('time added:     ', defaultTime / 1000);
+  const job = new CronJob(date, function() {
+	  job.stop();
     console.log('Stoping valve:', id);
     writeToConfig(cronBody, jsonFile);
     sendNotification(cronTitle, cronMessage, jsonConfig);
   });
   job.start();
+
+  // const job = new CronJob(cronTimer, function() {
+  //   job.stop();
+  //   console.log('Stoping valve:', id);
+  //   writeToConfig(cronBody, jsonFile);
+  //   sendNotification(cronTitle, cronMessage, jsonConfig);
+  // });
+  // job.start();
 
 }
 /*
