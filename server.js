@@ -8,7 +8,9 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import config from './webpack.config.js';
 
-import CronJob from 'cron';
+//import CronJob from 'cron';
+let CronJob = require('cron').CronJob;
+
 import superagent from "superagent";
 import { platform } from 'os';
 
@@ -296,6 +298,16 @@ function writeToConfig(body, jsonFile) {
         const title = `Zone starting - ${name}`
         const message = `${time} minutes remaining for ${name} zone.`
         sendNotification(title, message, jsonConfig);
+
+        const cronBody = {
+          "name": `valves.list.${id}.status.isOpen`,
+          "value": false,
+          "id": `${id}`,
+        };
+
+        createCronSchedule(id ,cronBody, jsonFile, jsonConfig)
+
+       
       }
       
     }
@@ -392,6 +404,34 @@ function sendNotification(title, message, config) {
   }
   
 }
+
+function createCronSchedule(id, cronBody, jsonFile, jsonConfig) {
+  const defaultTime = objectPath.get(jsonConfig, `valves.defaultShutoffDuration`);
+  let cronTimer;
+  
+  //https://superuser.com/questions/397444/how-to-generate-cron-expression-through-millisecond
+  // Hours
+  if (defaultTime >= 3600000) {
+    cronTimer = `0 * ${int((defaultTime % 3600) / 60)} * * *`
+  }
+  // Minutes
+  else {
+    cronTimer = `0 ${int((defaultTime / 3600))} * * * *`
+  }
+
+  const zone = objectPath.get(jsonConfig, `valves.list.${id}`);
+  const cronTitle = `Zone finished - ${zone.name}`
+  const cronMessage = `Shedule completed for ${zone.name} zone.`
+       
+  const job = new CronJob(cronTimer, function() {
+    job.stop();
+    console.log('Stoping valve:', id);
+    writeToConfig(cronBody, jsonFile);
+    sendNotification(cronTitle, cronMessage, jsonConfig);
+  });
+  job.start();
+
+}
 /*
 app.post('/api/relayon', multipart.any(), function(req, res) {
 
@@ -446,10 +486,3 @@ app.post('/api/relayoff', multipart.any(), function(req, res) {
 
 
 
-// console.log('Before job instantiation');
-// const job = new CronJob('0 */10 * * * *', function() {
-// 	const d = new Date();
-// 	console.log('Every Tenth Minute:', d);
-// });
-// console.log('After job instantiation');
-// job.start();
