@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { getSettings, updateSettings } from 'actions/settings.js'
 import Loading from 'components/Loading';
 import { Button, Checkbox, Col, Row, Select, Switch, TextInput } from 'react-materialize';
+import { calcTimeDelta } from 'react-countdown';
 const devServerEnabled = process.env.NODE_ENV !== 'production';
 
 export default class SettingsComponent extends Component {
@@ -20,6 +21,7 @@ export default class SettingsComponent extends Component {
     };
 
     this.selectChange = this.selectChange.bind(this);
+    // this.updateUserConfigSettings = this.updateUserConfigSettings.bind(this);
 
   }
 
@@ -36,9 +38,12 @@ export default class SettingsComponent extends Component {
 
   }
 
-  updateUserConfigSettings = async (newField, newValue) => {
-    const update = await updateSettings(newField, newValue);
-    const get = await this.getUserConfigSettings();
+  updateUserConfigSettings = async (newField, newValue, id = {}) => {
+    return fetch(updateSettings(newField, newValue ,id))
+        .then(response => {
+          this.getUserConfigSettings();
+        })
+        .catch( error => console.log(error));
   }
 
 
@@ -104,9 +109,14 @@ export default class SettingsComponent extends Component {
  }
 
   handleInputChange(e) {
+    const path = e.target.name;
+    const value = e.target.value;
+
     console.log('updating settings...');
-    console.log(`name: ${e.target.name}`);
-    console.log(`val: ${e.target.value}`);
+    console.log(`name: ${path}`);
+    console.log(`val: ${value}`);
+
+    this.updateUserConfigSettings(path, value);
   }
 
   selectChange(event){
@@ -147,25 +157,26 @@ export default class SettingsComponent extends Component {
     const valves = userConfig.valves.list;
     const gpioPins = userConfig.gpio.pins;
 
-
+    let optKey = 1;
     let valueGPIOList = [];
     for (let i = 1; i <= gpioPins; i++) {
-         valueGPIOList.push(<option value={i}>{i}</option>)
+        valueGPIOList.push(<option key={optKey++} value={i}>{i}</option>)
     }
 
     const switches = Object.keys(valves).map(key =>
-      <div key={key}>
-        <div className={`TITLE_${key}`}>{`Valve ${valves[key].position}`}</div>
-        <div className={`input-field col s6 SWITCH_${key}`}>
-          <Switch
-            id={`switch-${key}`}
-            offLabel="Disabled"
-            onClick={() => this.handleSwitchChange(key)}
-            onLabel="Enabled"
-            checked={valves[key].enabled}
-          />
-        </div>
-        <div className={`input-field col s6 INPUT_${key}`}>
+      <div key={key} className='user-settings'>
+        <div className={`TITLE_${key} col s12`}>{`Valve ${valves[key].position}`}</div>
+        <TextInput
+          s={5}
+          key={key}
+          name={`valves.list.${key}.name`}
+          className='user-settings__zone-name'
+          label="Zone Name"
+          onChange={(e) => this.handleInputChange(e)}
+          placeholder="User friendly name"
+          defaultValue={valves[key].name}
+        />
+        <div className={`input-field col s3 INPUT_${key}`}>
           <Select
             name={`valves.list.${key}.gpio`}
             label={`Valve ${valves[key].position} gpio pin`}
@@ -175,6 +186,15 @@ export default class SettingsComponent extends Component {
           >
             {valueGPIOList}
           </Select>
+        </div>
+        <div className={`input-field col s4 SWITCH_${key}`}>
+          <Switch
+            id={`switch-${key}`}
+            offLabel="Disabled"
+            onClick={() => this.handleSwitchChange(key)}
+            onLabel="Enabled"
+            checked={valves[key].enabled}
+          />
         </div>
       </div>
     );
@@ -199,16 +219,18 @@ export default class SettingsComponent extends Component {
                   />
                   <TextInput
                     s={12}
+                    name={`notifications.pushover.token`}
                     label="Token"
-                    onChange={this.handleInputChange}
+                    onChange={(e) => this.handleInputChange(e)}
                     placeholder="Pushover token"
                     defaultValue={pushover.token}
                     disabled={!pushoverEnabled}
                   />
                   <TextInput
                     s={12}
+                    name={`notifications.pushover.userKey`}
                     label="User Key"
-                    onChange={function handleInputChange(){}}
+                    onChange={(e) => this.handleInputChange(e)}
                     placeholder="Pushover user key "
                     defaultValue={pushover.userKey}
                     disabled={!pushoverEnabled}
@@ -229,17 +251,17 @@ export default class SettingsComponent extends Component {
                   <Select
                     options={dropdownOptions}
                     onChange={this.selectChange}
-                    value={userConfig.valves.defaultShutoffDuration}
+                    value={`${userConfig.valves.defaultShutoffDuration}`}
                     name="valves.defaultShutoffDuration"
                   >
-                    <option value={0}>Disabled</option>
-                    <option value={6000}>1 Minute</option>
-                    <option value={120000}>2 Minutes</option>
-                    <option value={300000}>5 Minutes</option>
-                    <option value={600000}>10 Minutes</option>
-                    <option value={900000}>15 Minutes</option>
-                    <option value={1800000}>30 Minutes</option>
-                    <option value={3600000}>60 Minutes</option>
+                    <option key={0} value={0}>Disabled</option>
+                    <option key={6000} value={6000}>1 Minute</option>
+                    <option key={120000} value={120000}>2 Minutes</option>
+                    <option key={300000} value={300000}>5 Minutes</option>
+                    <option key={600000} value={600000}>10 Minutes</option>
+                    <option key={900000} value={900000}>15 Minutes</option>
+                    <option key={1800000} value={1800000}>30 Minutes</option>
+                    <option key={3600000} value={3600000}>60 Minutes</option>
                   </Select>
                 </Col>
               </Row>

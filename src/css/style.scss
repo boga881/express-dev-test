@@ -4,3 +4,9 @@
 body {
   /*background-color: green;*/
 }
+
+.user-settings {
+  &__zone-name {
+    height: 4rem !important;
+  }
+}

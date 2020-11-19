@@ -19,6 +19,9 @@ node_modules
 *.swp
 .DS_Store
 
-#config files
+# Workspace files
+workspace.code-workspace
+
+# Config files
 config/user.config.json
 config/history.json

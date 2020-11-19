@@ -291,9 +291,10 @@ function writeToConfig(body, jsonFile) {
       objectPath.set(jsonConfig, `valves.list.${id}.status.timeStated`, timeStartedStamp);
 
       if (value) {
+        const name = objectPath.get(jsonConfig, `valves.list.${id}.name`);
         const time = generateRemainingTime(jsonConfig);
-        const title = `Zone starting - ${id}`
-        const message = `${time} minutes remaining for zone ${id}.`
+        const title = `Zone starting - ${name}`
+        const message = `${time} minutes remaining for ${name} zone.`
         sendNotification(title, message, jsonConfig);
       }
       
