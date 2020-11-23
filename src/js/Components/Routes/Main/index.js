@@ -46,7 +46,19 @@ export default class Main extends Component  {
     }
 
     toggleValveAction = async (event) => {
-      this.updateUserConfigSettings(event.target.name, event.target.value, event.target.id);
+      const name = event.target.name
+      const value = event.target.value;
+      const id = event.target.id
+
+      console.log(`toggleValveAction: ${value}`);
+      console.log(`toggleValveName: ${name}`);
+      if (value == "true") {
+        this.updateUserConfigSettings(name, value, event.target.id);
+      } else {
+        console.log('Forcing valve shut off');
+        this.updateUserConfigSettings(`valves.list.${id}.status.forceShutoff`, true, event.target.id);
+      }
+      
     }
 
     countdownRenderer = ({ hours, minutes, seconds, completed }) => {

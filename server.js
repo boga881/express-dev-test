@@ -28,6 +28,8 @@ const port = 3030;
 
 const devServerEnabled = process.env.NODE_ENV !== 'production';
 
+let cronJob = {};
+
 if (devServerEnabled) {
   //reload=true:Enable auto reloading when changing JS files or content
   //timeout=1000:Time from disconnecting from server to reconnecting
@@ -296,7 +298,7 @@ function writeToConfig(body, jsonFile) {
         const name = objectPath.get(jsonConfig, `valves.list.${id}.name`);
         const time = generateRemainingTime(jsonConfig);
         const title = `Zone starting - ${name}`
-        const message = `${time} minutes remaining for ${name} zone.`
+        const message = `${time} minutes remaining.`
         sendNotification(title, message, jsonConfig);
 
         const cronBody = {
@@ -306,11 +308,20 @@ function writeToConfig(body, jsonFile) {
           "file": userConfigFile,
         };
 
-        createCronSchedule(id ,cronBody, jsonFile, jsonConfig)
-
+        createCronSchedule(id ,cronBody, jsonFile, jsonConfig);
        
       }
       
+    }
+
+    // If valve manually switched off
+    if (path.includes("status.forceShutoff") && value) {
+      const name = objectPath.get(jsonConfig, `valves.list.${id}.name`);
+      objectPath.set(jsonConfig, `valves.list.${id}.status.isOpen`, false);
+      objectPath.set(jsonConfig, `valves.list.${id}.status.timeStated`, null);
+      // set value to false to `forceShutOff` property is disabled.
+      value = false
+      stopCronSchedule(id, name, jsonConfig);
     }
 
     console.log(JSON.stringify(body))
@@ -334,6 +345,7 @@ function writeToConfig(body, jsonFile) {
 
     })
   })
+
   return true;
 }
 
@@ -439,13 +451,14 @@ function createCronSchedule(id, cronBody, jsonFile, jsonConfig) {
   //date.setSeconds(defaultSeconds+2);
   console.log('calculated time:', date);
  //console.log('time added:     ', defaultTime / 1000);
-  const job = new CronJob(date, function() {
-	  job.stop();
+
+  cronJob[id] = new CronJob(date, function() {
+	  cronJob[id].stop();
     console.log('Stoping valve:', id);
     writeToConfig(cronBody, jsonFile);
     sendNotification(cronTitle, cronMessage, jsonConfig);
   });
-  job.start();
+  cronJob[id].start();
 
   // const job = new CronJob(cronTimer, function() {
   //   job.stop();
@@ -455,6 +468,15 @@ function createCronSchedule(id, cronBody, jsonFile, jsonConfig) {
   // });
   // job.start();
 
+}
+
+function stopCronSchedule(id, name, jsonConfig) {
+  cronJob[id].stop();
+
+  const zone = objectPath.get(jsonConfig, `valves.list.${id}`);
+  const cronTitle = `Zone finished - ${zone.name}`
+  const cronMessage = `Manually disabled by user.`
+  sendNotification(cronTitle, cronMessage, jsonConfig);
 }
 /*
 app.post('/api/relayon', multipart.any(), function(req, res) {
