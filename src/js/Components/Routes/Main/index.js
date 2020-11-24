@@ -46,19 +46,14 @@ export default class Main extends Component  {
     }
 
     toggleValveAction = async (event) => {
-      const name = event.target.name
       const value = event.target.value;
       const id = event.target.id
 
-      console.log(`toggleValveAction: ${value}`);
-      console.log(`toggleValveName: ${name}`);
       if (value == "true") {
-        this.updateUserConfigSettings(name, value, event.target.id);
+        this.updateUserConfigSettings(event.target.name, value, event.target.id);
       } else {
-        console.log('Forcing valve shut off');
         this.updateUserConfigSettings(`valves.list.${id}.status.forceShutoff`, true, event.target.id);
       }
-      
     }
 
     countdownRenderer = ({ hours, minutes, seconds, completed }) => {
@@ -152,8 +147,7 @@ export default class Main extends Component  {
 
             <h5>TODO items</h5>
             <ul>
-              <li>Stop cronjob if manually stopped valve</li>
-              <li>Log history on manuall trigger</li>
+              <li></li>
             </ul> 
             <h5>Future items</h5>
             <ul> 

@@ -51,10 +51,10 @@ export default class SettingsComponent extends Component {
     const promise = this.getUserConfigSettings();
   }
 
-  componentDidUpdate() {
-    {/* eslint no-undef:0 */}
-    M.updateTextFields();
-  }
+  // componentDidUpdate() {
+  //   {/* eslint no-undef:0 */}
+  //   M.updateTextFields();
+  // }
 
   setStateFromProps(props) {
     this.setState({

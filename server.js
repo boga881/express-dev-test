@@ -289,7 +289,7 @@ function writeToConfig(body, jsonFile) {
       value = false;
     }
 
-    // Set the open time if vale is opening else null
+    // Set the open time if valve is opening
     if (path.includes("status.isOpen")) {
       const timeStartedStamp = value ? Date.now() : null;
       objectPath.set(jsonConfig, `valves.list.${id}.status.timeStated`, timeStartedStamp);
@@ -300,6 +300,7 @@ function writeToConfig(body, jsonFile) {
         const title = `Zone starting - ${name}`
         const message = `${time} minutes remaining.`
         sendNotification(title, message, jsonConfig);
+        updateHistory(id, name, 'On');
 
         const cronBody = {
           "name": `valves.list.${id}.status.isOpen`,
@@ -322,6 +323,7 @@ function writeToConfig(body, jsonFile) {
       // set value to false to `forceShutOff` property is disabled.
       value = false
       stopCronSchedule(id, name, jsonConfig);
+      updateHistory(id, name, 'Off');
     }
 
     console.log(JSON.stringify(body))
@@ -385,6 +387,34 @@ function writeToSchedule(body, jsonFile, type) {
   })
 }
 
+function writeToHistory(body, timeStamp) {
+  jsonReader(historyFile, (err, historyConfig) => {
+    if (err) {
+      console.log(err)
+      return false;
+    }
+
+    if (devServerEnabled) {
+      console.log('Adding action to history => ' + historyFile);
+    }
+
+    objectPath.set(historyConfig, timeStamp, body);
+
+    fs.writeFile(historyFile, JSON.stringify(historyConfig, null, 2), (err) => {
+      if (err) {
+        console.log('Error writing file:', err)
+        return false;
+      }
+
+      if (devServerEnabled) {
+        console.log('Succsessfully added action to histroy => ' + historyFile);
+      }
+
+    })
+    return true;
+  })
+}
+
 function generateRemainingTime(jsonConfig) {
   const defaultDuration = jsonConfig.valves.defaultShutoffDuration;
   const minutes = Math.floor(defaultDuration / 60000);
@@ -420,7 +450,6 @@ function sendNotification(title, message, config) {
 
 function createCronSchedule(id, cronBody, jsonFile, jsonConfig) {
   const defaultTime = objectPath.get(jsonConfig, `valves.defaultShutoffDuration`);
-  //let cronTimer;
   let cronStep;
   let date = new Date();
   console.log('started time:   ', date);
@@ -438,19 +467,9 @@ function createCronSchedule(id, cronBody, jsonFile, jsonConfig) {
     date.setMinutes(date.getMinutes() + cronStep);
   }
 
-  //console.log(`Cron configured: ${cronTimer}`);
-
   const zone = objectPath.get(jsonConfig, `valves.list.${id}`);
   const cronTitle = `Zone finished - ${zone.name}`
   const cronMessage = `Shedule completed for ${zone.name} zone.`
-     
-  
-  //let date = new Date();
-  //console.log('started time:   ', date);
-  //const defaultSeconds = defaultTime / 1000;
-  //date.setSeconds(defaultSeconds+2);
-  console.log('calculated time:', date);
- //console.log('time added:     ', defaultTime / 1000);
 
   cronJob[id] = new CronJob(date, function() {
 	  cronJob[id].stop();
@@ -459,15 +478,6 @@ function createCronSchedule(id, cronBody, jsonFile, jsonConfig) {
     sendNotification(cronTitle, cronMessage, jsonConfig);
   });
   cronJob[id].start();
-
-  // const job = new CronJob(cronTimer, function() {
-  //   job.stop();
-  //   console.log('Stoping valve:', id);
-  //   writeToConfig(cronBody, jsonFile);
-  //   sendNotification(cronTitle, cronMessage, jsonConfig);
-  // });
-  // job.start();
-
 }
 
 function stopCronSchedule(id, name, jsonConfig) {
@@ -477,6 +487,19 @@ function stopCronSchedule(id, name, jsonConfig) {
   const cronTitle = `Zone finished - ${zone.name}`
   const cronMessage = `Manually disabled by user.`
   sendNotification(cronTitle, cronMessage, jsonConfig);
+}
+
+function updateHistory(id, name, status) {
+  const timeStamp = Date.now();
+  
+  const jsonBody = {
+    "timestamp": timeStamp,
+    "source": id,
+    "zone": name,
+    "schedule": "",
+    "action": status
+  };
+  writeToHistory(jsonBody, timeStamp);
 }
 /*
 app.post('/api/relayon', multipart.any(), function(req, res) {
