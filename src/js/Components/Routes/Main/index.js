@@ -147,7 +147,7 @@ export default class Main extends Component  {
 
             <h5>TODO items</h5>
             <ul>
-              <li></li>
+              <li>Authentication</li>
             </ul> 
             <h5>Future items</h5>
             <ul> 

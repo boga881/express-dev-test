@@ -62,9 +62,9 @@ export default class HistoryComponent extends Component {
               <thead>
                 <tr>
                   <th>Date</th>
+                  <th>Name</th>
                   <th>Valve</th>
                   <th>Action</th>
-                  <th>Zone</th>
                   <th>Schedule</th>
                 </tr>
               </thead>
@@ -73,9 +73,9 @@ export default class HistoryComponent extends Component {
                 {Object.keys(history).map((key, i) => (
                   <tr key={history[key].timestamp}>
                     <td>{moment(history[key].timestamp,'x').format('HH:mm, ddd DD MMM YY')}</td>
+                    <td>{history[key].name}</td>
                     <td>{history[key].source}</td>
                     <td>{history[key].action}</td>
-                    <td>{history[key].zone}</td>
                     <td>{history[key].schedule}</td>
                   </tr>
                 ))}

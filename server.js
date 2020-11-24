@@ -495,7 +495,7 @@ function updateHistory(id, name, status) {
   const jsonBody = {
     "timestamp": timeStamp,
     "source": id,
-    "zone": name,
+    "name": name,
     "schedule": "",
     "action": status
   };
