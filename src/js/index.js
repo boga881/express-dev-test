@@ -7,6 +7,10 @@ import History from 'components/Routes/History';
 import Main from 'components/Routes/Main';
 import NavBar from 'components/NavBar';
 
+import NotifyLogin from "components/Auth/NotifyLogin";
+import LogoutUser from "components/Auth/LogoutUser";
+import ProtectedRoute from "components/Auth/ProtectedRoute";
+
 import M from "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 
@@ -18,12 +22,19 @@ function App() {
       <Router>
           <NavBar />
 
-          <Switch>
+          {/* <Switch> */}
             <Route exact path='/' component={Main} />
-            <Route path='/settings' component={Settings} />
+            {/* <Route path='/settings' component={Settings} /> */}
             <Route path='/schedule' component={Schedule} />
             <Route path='/history' component={History} />
-          </Switch>
+            <Route path="/login" exact component={NotifyLogin} />
+            <ProtectedRoute
+              path="/settings"
+              exact
+              component={Settings}
+            />
+            <ProtectedRoute exact path="/logout" component={LogoutUser} />
+          {/* </Switch> */}
       </Router>
     </div>
   );

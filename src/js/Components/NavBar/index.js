@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
+import * as AuthService from "utils/authService";
+
 import logo from 'images/logo.png';
 import icon from 'images/icon32x32.png';
 import sidebar from 'images/sidebar.jpg';
@@ -8,6 +10,9 @@ class NavBar extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      isLoggedIn: AuthService.isAuthenticated()
+    }
   }
 
   componentDidMount() {
@@ -15,7 +20,15 @@ class NavBar extends Component {
     let instance = M.Sidenav.getInstance(this.Sidenav);
   }
 
+  // toggleAuth(event) {
+  //   this.setState({
+	//      isLoggedIn: event.target.value
+  //   });
+  // }
+
   render() {
+    
+    const {isLoggedIn} = this.state;
 
     return (
       <React.Fragment>
@@ -26,15 +39,32 @@ class NavBar extends Component {
             </a>
             <a href="/" className="brand-logo"><i className="material-icons left">whatshot</i>ICUP</a>
             <ul className="right hide-on-med-and-down">
-              <li>
-                <Link to="/schedule"><i className="material-icons left">timer</i>Schedule</Link>
-              </li>
-              <li>
-                <Link to="/history"><i className="material-icons left">history</i>History</Link>
-              </li>
-              <li>
-                <Link to="/settings"><i className="material-icons left">settings</i>Settings</Link>
-              </li>
+
+              {!isLoggedIn &&
+                <li>
+                   {/*onChange={this.toggleAuth} value='false'*/}
+                  <Link to="/login" ><i className="material-icons left">person</i>Login</Link>
+                </li>
+              }
+
+              {isLoggedIn &&
+                <React.Fragment>
+                  <li>
+                   <Link to="/schedule"><i className="material-icons left">timer</i>Schedule</Link>
+                  </li>
+                  <li>
+                    <Link to="/history"><i className="material-icons left">history</i>History</Link>
+                  </li>
+                  <li>
+                    <Link to="/settings"><i className="material-icons left">settings</i>Settings</Link>
+                  </li>
+                  <li>
+                    <Link to="logout"><i className="material-icons left">person</i>Login</Link>
+                  </li>
+                </React.Fragment>
+                
+              }
+
             </ul>
           </div>
         </nav>
