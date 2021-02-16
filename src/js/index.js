@@ -23,16 +23,12 @@ function App() {
           <NavBar />
 
           {/* <Switch> */}
-            <Route exact path='/' component={Main} />
-            {/* <Route path='/settings' component={Settings} /> */}
-            <Route path='/schedule' component={Schedule} />
-            <Route path='/history' component={History} />
+          
             <Route path="/login" exact component={NotifyLogin} />
-            <ProtectedRoute
-              path="/settings"
-              exact
-              component={Settings}
-            />
+            <ProtectedRoute exact path='/' component={Main} />
+            <ProtectedRoute path='/schedule' component={Schedule} />
+            <ProtectedRoute path='/history' component={History} />
+            <ProtectedRoute path="/settings" component={Settings} />
             <ProtectedRoute exact path="/logout" component={LogoutUser} />
           {/* </Switch> */}
       </Router>

@@ -20,15 +20,20 @@ class NavBar extends Component {
     let instance = M.Sidenav.getInstance(this.Sidenav);
   }
 
-  // toggleAuth(event) {
-  //   this.setState({
-	//      isLoggedIn: event.target.value
-  //   });
-  // }
+  toggleAuthState = (e) => {
+    console.log('NAV - logged user out');
+    this.setState({
+      isLoggedIn: e.target.value
+    });
+  }
 
   render() {
     
     const {isLoggedIn} = this.state;
+
+    console.log('------------');
+    console.log(this.state.isLoggedIn);
+    console.log('------------');
 
     return (
       <React.Fragment>
@@ -42,8 +47,8 @@ class NavBar extends Component {
 
               {!isLoggedIn &&
                 <li>
-                   {/*onChange={this.toggleAuth} value='false'*/}
-                  <Link to="/login" ><i className="material-icons left">person</i>Login</Link>
+                  {/*onChange={this.toggleAuth} value='false'*/}
+                  <Link to="/login"><i className="material-icons left">person</i>Login</Link>
                 </li>
               }
 
@@ -59,7 +64,7 @@ class NavBar extends Component {
                     <Link to="/settings"><i className="material-icons left">settings</i>Settings</Link>
                   </li>
                   <li>
-                    <Link to="logout"><i className="material-icons left">person</i>Login</Link>
+                    <Link to="logout" onClick={this.toggleAuthState} value='false'><i className="material-icons left">exit_to_app</i>Logout</Link>
                   </li>
                 </React.Fragment>
                 
