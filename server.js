@@ -49,10 +49,11 @@ if (devServerEnabled) {
   var hotMiddleware = require('webpack-hot-middleware')(compiler, {
     log: () => {},
     heartbeat: 2000
-});
+  });
 
   //Enable "webpack-hot-middleware"
   app.use(webpackHotMiddleware(compiler));
+
 }
 
 app.use(express.static('./dist'));
@@ -61,6 +62,7 @@ app.use(bodyParser.json());
 app.listen(port, () => {
   console.log('Server started on port:' + port);
 });
+
 
 /*
  * The API endpoints.

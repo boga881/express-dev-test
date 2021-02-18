@@ -1,22 +1,13 @@
 import React, { Fragment, Component } from "react";
 import * as AuthService from "utils/authService";
 import { Redirect } from "react-router-dom";
-
+import Login from 'components/Routes/Login';
 class NotifyLogin extends Component {
 
     state = { 
         redirectToReferrer: false 
     };
     
-    loginHandler = () => {
-        console.log("Came to login handler");
-        const isLoggedIn = AuthService.login();
-        this.setState({ 
-            redirectToReferrer: true,
-            isLoggedIn: isLoggedIn,
-        });
-    };
-
     render() {
         let { from } = this.props.location.state || { from: { pathname: "/" } };
         let { redirectToReferrer } = this.state;
@@ -25,11 +16,8 @@ class NotifyLogin extends Component {
 
         return (
             <Fragment>
-                <h1 className="content-header">
-                    You need to login before viewing this page.
-                </h1>
                 <div className="justify-center">
-                    <button className="btn btn-danger" onClick={this.loginHandler}>Login</button>
+                    <Login /> 
                 </div>
             </Fragment>
         );

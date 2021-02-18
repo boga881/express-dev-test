@@ -24,12 +24,14 @@ function App() {
 
           {/* <Switch> */}
           
-            <Route path="/login" exact component={NotifyLogin} />
             <ProtectedRoute exact path='/' component={Main} />
-            <ProtectedRoute path='/schedule' component={Schedule} />
-            <ProtectedRoute path='/history' component={History} />
-            <ProtectedRoute path="/settings" component={Settings} />
+            <ProtectedRoute exact path='/schedule' component={Schedule} />
+            <ProtectedRoute exact path='/history' component={History} />
+            <ProtectedRoute exact path="/settings" component={Settings} />
             <ProtectedRoute exact path="/logout" component={LogoutUser} />
+
+            <Route exact path="/login" exact component={NotifyLogin} />
+            
           {/* </Switch> */}
       </Router>
     </div>

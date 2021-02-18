@@ -2,7 +2,8 @@ export const login = () => {
     console.log("Came here login");
     window.localStorage.setItem("auth", true);
     //@TODO: Implement better way to refresh navbar. Redux store?
-    location.reload(); 
+    console.log('redirect to home');
+    window.location.replace("/");
 };
   
 export const isAuthenticated = () => {

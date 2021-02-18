@@ -4,8 +4,8 @@ const webpack = require('webpack');
 module.exports = {
   mode: 'development',
   devServer: {
-    contentBase: path.join(__dirname, 'public'),
-    publicPath: './src/js/',
+    historyApiFallback: true,
+    //contentBase: path.join(__dirname, 'public'),
     port: 3030,
     host: `localhost`,
   },
@@ -29,7 +29,7 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, 'dist'),
-    publicPath: '/js/',
+    publicPath: '/',
     filename: `[name].js`,
   },
   resolve: {
